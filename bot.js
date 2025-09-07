@@ -18,7 +18,8 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessageReactions
     ]
 });
 
@@ -211,11 +212,15 @@ client.on(Events.MessageCreate, async message => {
 
 // Handle reaction events
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    console.log(`Reaction detected: ${reaction.emoji.name} by ${user.username}`);
+    
     // Ignore bot reactions
     if (user.bot) return;
     
     // Only handle reactions on bot messages
     if (reaction.message.author.id !== client.user.id) return;
+    
+    console.log(`Reaction on bot message: ${reaction.emoji.name}`);
     
     // Check if it's in a ticket channel
     const isTicketChannel = reaction.message.channel.name && (
