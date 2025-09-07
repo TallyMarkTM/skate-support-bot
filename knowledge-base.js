@@ -64,7 +64,7 @@ const knowledgeBase = {
         solutions: [
             {
                 issue: "Native menu stuck on 'scanning for AoB's'",
-                solution: "This is a common issue! Check this specific fix: https://discord.com/channels/725753042087182406/998366877233463386/1398125361665151176\n\nIf that doesn't work, follow <#807348308451655730> (Beginners Guide) if you didn't install using our guide originally.",
+                solution: "This is a common issue! Download this fix: https://www.mediafire.com/file/ng36nd3ndxa8yhp/RPCS3_BLUS_Build.7z/file\n\nThis is the updated RPCS3 build that resolves the AoB scanning problem. If you need setup help, follow <#807348308451655730> (Beginners Guide).",
                 confidence: 0.95
             },
             {
