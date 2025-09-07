@@ -145,6 +145,18 @@ const knowledgeBase = {
         ]
     },
 
+    // Graphics Quality Issues
+    quality: {
+        keywords: ['blurry', 'game is blurry', 'looks bad', 'doesnt look good', 'doesn\'t look good', 'bad quality', 'low quality', 'pixelated', 'resolution', 'graphics quality', 'game quality', 'looks terrible', 'looks awful'],
+        solutions: [
+            {
+                issue: "Game is blurry or doesn't look good",
+                solution: "To improve graphics quality:\n\n1. **Close the game**\n2. **Right-click the game** on the game list\n3. **Click \"Create or change custom configuration\"** from default settings\n4. **Go to the GPU tab**\n5. **Increase resolution scale to 200 or 300 percent**\n6. **Click Save**\n7. **Boot the game**\n\nThis will significantly improve the visual quality!",
+                confidence: 0.95
+            }
+        ]
+    },
+
     // Updates and DLC (Universal)
     updates: {
         keywords: ['update', 'updates', 'dlc', 'version', 'blus', 'bles', 'game update', 'pkg', 'how to update', 'update my game', 'game version', 'xenia', 'xenia update', 'xenia dlc', 'xbox', 'xbox 360', 'console', 'get updates', 'get dlc'],

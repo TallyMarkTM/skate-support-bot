@@ -105,6 +105,7 @@ client.on(Events.MessageCreate, async message => {
         content.includes('cfss') || content.includes('skate shop') || content.includes('coach frank') ||
         content.includes('textures') || content.includes('texture') ||
         content.includes('maps') || content.includes('skate 2') || content.includes('san van') ||
+        content.includes('blurry') || content.includes('looks bad') || content.includes('bad quality') || content.includes('resolution') ||
         content.includes('xenia') || content.includes('xbox') || content.includes('dlc') ||
         content.includes('error') || message.mentions.has(client.user) || message.content.startsWith('!support') ||
         isTicketChannel; // Always try to help in ticket channels
