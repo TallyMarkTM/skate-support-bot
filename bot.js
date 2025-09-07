@@ -209,6 +209,44 @@ client.on(Events.MessageCreate, async message => {
     }
 });
 
+// Handle reaction events
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    // Ignore bot reactions
+    if (user.bot) return;
+    
+    // Only handle reactions on bot messages
+    if (reaction.message.author.id !== client.user.id) return;
+    
+    // Check if it's in a ticket channel
+    const isTicketChannel = reaction.message.channel.name && (
+        reaction.message.channel.name.startsWith('ticket-') || 
+        reaction.message.channel.name.startsWith('closed-')
+    );
+    
+    if (!isTicketChannel) return;
+    
+    if (reaction.emoji.name === '❌') {
+        // User clicked X - ping @Support
+        try {
+            await reaction.message.channel.send(`❌ This solution didn't help ${user}. @Support, please assist!`);
+        } catch (error) {
+            console.error('Error sending support ping:', error);
+        }
+    } else if (reaction.emoji.name === '✅') {
+        // User clicked check mark - ask if they need more help
+        try {
+            const followUpMessage = await reaction.message.channel.send(`✅ Great! Glad that helped ${user}! Is there anything else I can help you with?`);
+            
+            // Allow the bot to respond again in this ticket after a successful solution
+            if (respondedTickets.has(reaction.message.channel.id)) {
+                respondedTickets.delete(reaction.message.channel.id);
+            }
+        } catch (error) {
+            console.error('Error sending follow-up message:', error);
+        }
+    }
+});
+
 // Error handling
 client.on(Events.Error, error => {
     console.error('Discord client error:', error);
