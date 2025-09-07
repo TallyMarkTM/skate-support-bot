@@ -147,7 +147,7 @@ const knowledgeBase = {
 
     // Graphics Quality Issues
     quality: {
-        keywords: ['blurry', 'game is blurry', 'looks bad', 'doesnt look good', 'doesn\'t look good', 'bad quality', 'low quality', 'pixelated', 'resolution', 'graphics quality', 'game quality', 'looks terrible', 'looks awful'],
+        keywords: ['blurry', 'blury', 'game is blurry', 'looks bad', 'doesnt look good', 'doesn\'t look good', 'bad quality', 'low quality', 'pixelated', 'resolution', 'graphics quality', 'game quality', 'looks terrible', 'looks awful'],
         solutions: [
             {
                 issue: "Game is blurry or doesn't look good",
