@@ -140,6 +140,15 @@ client.on(Events.MessageCreate, async message => {
             await message.react('✅'); // Mark as helpful
             await message.react('❌'); // Mark as not helpful
             
+            // Send follow-up message after a short delay
+            setTimeout(async () => {
+                try {
+                    await message.channel.send("If this solution doesn't help, please ping @Support for human assistance! 🙋‍♂️");
+                } catch (error) {
+                    console.error('Error sending follow-up message:', error);
+                }
+            }, 3000); // 3 second delay
+            
             // Mark this ticket as responded to
             if (isTicketChannel) {
                 respondedTickets.add(message.channel.id);
