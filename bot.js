@@ -1,6 +1,9 @@
 const { Client, GatewayIntentBits, Events, EmbedBuilder } = require('discord.js');
 const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js');
 
+// Track which ticket channels the bot has already responded in
+const respondedTickets = new Set();
+
 // Use environment variable for token in production, fallback to config.json for local development
 let config;
 try {
@@ -81,6 +84,11 @@ client.on(Events.MessageCreate, async message => {
         return;
     }
 
+    // Check if we've already responded in this ticket channel
+    if (isTicketChannel && respondedTickets.has(message.channel.id)) {
+        return; // Don't respond again in this ticket
+    }
+
     // AI-Powered Support System - Only works in ticket channels now
     const shouldRespond = 
         content.includes('help') || content.includes('issue') || content.includes('problem') || 
@@ -131,6 +139,11 @@ client.on(Events.MessageCreate, async message => {
             await message.react('✅'); // Mark as helpful
             await message.react('❌'); // Mark as not helpful
             
+            // Mark this ticket as responded to
+            if (isTicketChannel) {
+                respondedTickets.add(message.channel.id);
+            }
+            
         } else {
             // Provide general help if no specific solution found - only in ticket channels
             if (isTicketChannel) {
@@ -140,6 +153,11 @@ client.on(Events.MessageCreate, async message => {
                     .setTimestamp();
 
                 await message.reply({ embeds: [embed] });
+                
+                // Mark this ticket as responded to
+                if (isTicketChannel) {
+                    respondedTickets.add(message.channel.id);
+                }
             }
         }
         return;
