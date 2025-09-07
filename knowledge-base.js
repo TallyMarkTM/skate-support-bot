@@ -145,31 +145,14 @@ const knowledgeBase = {
         ]
     },
 
-    // Xenia Issues
-    xenia: {
-        keywords: ['xenia', 'xenia update', 'xenia dlc', 'dlc', 'xbox', 'xbox 360', 'xenia help', 'xenia setup'],
-        solutions: [
-            {
-                issue: "Xenia updates and DLC help",
-                solution: "For Xenia updates and DLC help, check this guide: https://discord.com/channels/725753042087182406/764082333623386123/1363643991458975825\n\nThis covers everything you need for Xenia setup, updates, and DLC installation.",
-                confidence: 0.95
-            }
-        ]
-    },
-
-    // Game Updates
+    // Updates and DLC (Universal)
     updates: {
-        keywords: ['update', 'version', 'blus', 'bles', 'game update', 'pkg', 'how to update', 'update my game', 'game version'],
+        keywords: ['update', 'updates', 'dlc', 'version', 'blus', 'bles', 'game update', 'pkg', 'how to update', 'update my game', 'game version', 'xenia', 'xenia update', 'xenia dlc', 'xbox', 'xbox 360', 'console', 'get updates', 'get dlc'],
         solutions: [
             {
-                issue: "How to update Skate 3 game",
-                solution: "Download the correct update files from this Google Drive: https://drive.google.com/drive/folders/1qv6p9MNn3Nw76shC7E8LCtuxyj9JXVLz\n\nFor RPCS3: Go to the RPCS3 folder and download the appropriate PKG file, then drag and drop it onto your RPCS3 emulator.",
+                issue: "Game updates and DLC for all platforms",
+                solution: "For updates and DLC on any platform (RPCS3, Xenia, or console), check this comprehensive guide: https://discord.com/channels/725753042087182406/764082333623386123/1363643991458975825\n\nThis covers everything you need regardless of your platform.",
                 confidence: 0.95
-            },
-            {
-                issue: "Game update installation",
-                solution: "First, download the update from: https://drive.google.com/drive/folders/1qv6p9MNn3Nw76shC7E8LCtuxyj9JXVLz\n\nThen drag and drop the PKG file onto your RPCS3 emulator. The game should be updated automatically.",
-                confidence: 0.9
             }
         ]
     }
