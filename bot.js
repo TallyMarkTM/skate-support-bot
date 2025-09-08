@@ -53,6 +53,17 @@ client.on(Events.MessageCreate, async message => {
         message.reply('Pong! 🏓');
     }
 
+    // Debug command to check if bot is seeing messages
+    if (message.content === '!debug') {
+        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
+        const isTicket = message.channel.name && (
+            message.channel.name.startsWith('ticket-') || 
+            message.channel.name.startsWith('closed-')
+        );
+        
+        message.reply(`**Debug Info:**\n**Channel:** ${message.channel.name}\n**Is Ticket:** ${isTicket}\n**Your Roles:** ${userRoles.join(', ')}\n**Message:** "${message.content}"`);
+    }
+
     // Hello command
     if (message.content === '!hello') {
         message.reply(`Hello ${message.author.username}! 👋 Welcome to the Skate 3 modding community!`);
