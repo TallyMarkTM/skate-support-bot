@@ -179,6 +179,88 @@ const knowledgeBase = {
                 confidence: 0.95
             }
         ]
+    },
+
+    // Game Performance Issues
+    gameperformance: {
+        keywords: ['slow motion', 'game slow', 'game is slow', 'slowmo', 'slow mo', 'running slow', 'laggy', 'choppy', 'low fps'],
+        solutions: [
+            {
+                issue: "Game is in slow motion",
+                solution: "To fix slow motion gameplay:\n\n1. **Close the game**\n2. **Right-click the game** on the game list\n3. **Click \"Create or change custom configuration\"** from default settings\n4. **Go to the CPU tab**\n5. **Enable SPU loop detection**\n6. **Click Save**\n7. **Boot the game**\n\nThis should resolve the slow motion issue.",
+                confidence: 0.95
+            }
+        ]
+    },
+
+    // Physics and Clipping Issues
+    physics: {
+        keywords: ['falling through floor', 'clipping through floor', 'skater falls through', 'going through ground', 'floor glitch', 'physics bug', 'falling through map', 'clipping bug'],
+        solutions: [
+            {
+                issue: "Skater keeps falling through the floor",
+                solution: "To fix clipping/falling through floor issues:\n\n1. **Close the game**\n2. **Right-click the game** on the game list\n3. **Click \"Create or change custom configuration\"** from default settings\n4. **Go to the CPU tab**\n5. **Change the XFloat to \"Accurate XFloat\"**\n6. **Click Save**\n7. **Boot the game**\n\nThis will fix physics issues causing you to fall through the floor.",
+                confidence: 0.95
+            }
+        ]
+    },
+
+    // Display Issues
+    display: {
+        keywords: ['billboards blacked out', 'billboards black', 'edit skater preview black', 'preview pictures black', 'black billboards', 'skater preview missing', 'black preview', 'missing billboards'],
+        solutions: [
+            {
+                issue: "Billboards and edit skater preview pictures are blacked out",
+                solution: "To fix black billboards and skater preview pictures:\n\n1. **Close the game**\n2. **Right-click the game** on the game list\n3. **Click \"Create or change custom configuration\"** from default settings\n4. **Go to the GPU tab**\n5. **Enable \"Write Color Buffers\"**\n6. **Click Save**\n7. **Boot the game**\n\nThis will restore the missing billboard and preview images.",
+                confidence: 0.95
+            }
+        ]
+    },
+
+    // RPCS3 Software Detection
+    software: {
+        keywords: ['could not find any software', 'no software found', 'rpcs3 no software', 'software not detected', 'game not showing', 'rpcs3 empty', 'no games detected'],
+        solutions: [
+            {
+                issue: "RPCS3 says it could not find any software",
+                solution: "If RPCS3 can't find any software, get the custom RPCS3 build that comes with Skate 3 pre-installed:\n\nhttps://www.mediafire.com/file/ng36nd3ndxa8yhp/RPCS3_BLUS_Build.7z/file\n\nThis build has been tested and includes everything you need.",
+                confidence: 0.95
+            }
+        ]
+    },
+
+    // RPCS3 Crashes and Stability
+    crashes: {
+        keywords: ['rpcs3 crashes', 'rpcs3 freezes', 'rpcs3 crash', 'rpcs3 freeze', 'emulator crash', 'emulator freeze', 'rpcs3 stops working', 'rpcs3 not responding'],
+        solutions: [
+            {
+                issue: "RPCS3 crashes or freezes - CPU requirements",
+                solution: "**CPU Requirements:** The RPCS3 developers recommend a strong 6-core CPU or greater for optimal gameplay. If you have an old CPU, then RPCS3 crashing is expected because it's not powerful enough.",
+                confidence: 0.9
+            },
+            {
+                issue: "RPCS3 crashes during compiling with powerful CPU",
+                solution: "If your CPU is powerful but RPCS3 crashes specifically during the compiling part, you need to **lower your CPU core voltage**.\n\nGo to https://chatgpt.com or google.com and ask: \"How do I lower my core CPU voltage?\" For the best results and help, use ChatGPT.",
+                confidence: 0.85
+            },
+            {
+                issue: "RPCS3 crashes on Windows 11 with OneDrive",
+                solution: "If you're on **Windows 11**, make sure **OneDrive** is not part of your RPCS3's path line. Move the RPCS3 folder to another hard drive or location that doesn't go through OneDrive.\n\nGo to https://chatgpt.com and ask: \"Can I remove OneDrive from Windows 11 without issues and without losing my files that are in a OneDrive path?\" Follow the instructions carefully and **DO NOT RUSH**.",
+                confidence: 0.9
+            }
+        ]
+    },
+
+    // Game Crashes After Loading
+    gamecrashes: {
+        keywords: ['game crashes after loading', 'crashes after few seconds', 'crashes after minutes', 'game loads then crashes', 'crashes fast', 'quick crash', 'game stops working'],
+        solutions: [
+            {
+                issue: "Game loads but crashes after a few seconds or minutes",
+                solution: "If your CPU and GPU are good enough for RPCS3 but the game crashes quickly, use the custom RPCS3 build:\n\nhttps://www.mediafire.com/file/ng36nd3ndxa8yhp/RPCS3_BLUS_Build.7z/file\n\nIf the custom build also crashes fast after playing, ask for further assistance in the support channels.",
+                confidence: 0.9
+            }
+        ]
     }
 };
 
