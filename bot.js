@@ -215,6 +215,50 @@ client.on(Events.MessageCreate, async message => {
         return;
     }
 
+    // Test command for support team to test bot responses
+    if (message.content.startsWith('!test ')) {
+        // Check if user has support permissions
+        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper'];
+        const hasSupport = message.member?.roles.cache.some(role => supportRoles.includes(role.name));
+        
+        if (!hasSupport) {
+            return message.reply('❌ Only support team members can use the test command.');
+        }
+
+        const testQuestion = message.content.slice(6); // Remove '!test '
+        const bestSolution = findBestSolution(testQuestion);
+        
+        if (bestSolution && bestSolution.confidence > 0.3) {
+            const embed = new EmbedBuilder()
+                .setColor(0xFF9900) // Orange color to distinguish test responses
+                .setTitle('🧪 Coach Frank Says (TEST MODE)')
+                .setDescription(bestSolution.solution)
+                .addFields(
+                    { name: 'Confidence Score', value: `${(bestSolution.confidence * 100).toFixed(1)}%`, inline: true },
+                    { name: 'Category', value: bestSolution.category, inline: true },
+                    { name: 'Issue Type', value: bestSolution.issue, inline: false }
+                )
+                .setFooter({ text: 'This is a test response - not sent to a real user' })
+                .setTimestamp();
+
+            await message.reply({ embeds: [embed] });
+        } else {
+            const embed = new EmbedBuilder()
+                .setColor(0xFF0000)
+                .setTitle('🧪 Test Result: No Match Found')
+                .setDescription(`No solution found for: "${testQuestion}"`)
+                .addFields({
+                    name: 'Confidence Threshold',
+                    value: 'Minimum confidence needed: 30%',
+                    inline: false
+                })
+                .setFooter({ text: 'Consider adding this to the knowledge base if it\'s a common question' });
+
+            await message.reply({ embeds: [embed] });
+        }
+        return;
+    }
+
     // Help command
     if (message.content === '!help') {
         const helpEmbed = new EmbedBuilder()
@@ -224,6 +268,7 @@ client.on(Events.MessageCreate, async message => {
             .addFields(
                 { name: '🔧 Automatic Support', value: 'Just describe your issue and I\'ll try to help! Keywords like "rpcs3", "graphics", "mods", etc. trigger automatic responses.', inline: false },
                 { name: '!ask [question]', value: 'Search for specific solutions (e.g., `!ask rpcs3 black screen`)', inline: false },
+                { name: '!test [question]', value: '🧪 **Support Only** - Test bot responses with detailed info (e.g., `!test catastrophic failure`)', inline: false },
                 { name: '!support', value: 'Force trigger the support system', inline: false },
                 { name: '!ping', value: 'Test if the bot is working', inline: false },
                 { name: '!hello', value: 'Get a friendly greeting', inline: false },
