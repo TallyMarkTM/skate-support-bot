@@ -219,12 +219,12 @@ const knowledgeBase = {
 
     // RPCS3 Software Detection
     software: {
-        keywords: ['could not find any software', 'no software found', 'rpcs3 no software', 'software not detected', 'game not showing', 'rpcs3 empty', 'no games detected'],
+        keywords: ['could not find any software', 'no software found', 'rpcs3 no software', 'software not detected', 'game not showing', 'rpcs3 empty', 'no games detected', 'find any software', 'any software', 'software found', 'no games', 'empty rpcs3'],
         solutions: [
             {
                 issue: "RPCS3 says it could not find any software",
                 solution: "If RPCS3 can't find any software, get the custom RPCS3 build that comes with Skate 3 pre-installed:\n\nhttps://www.mediafire.com/file/ng36nd3ndxa8yhp/RPCS3_BLUS_Build.7z/file\n\nThis build has been tested and includes everything you need.",
-                confidence: 0.95
+                confidence: 0.98
             }
         ]
     },
