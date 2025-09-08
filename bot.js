@@ -91,7 +91,7 @@ client.on(Events.MessageCreate, async message => {
     }
 
     // Don't respond if support team members are already helping
-    const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper'];
+    const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
     const hasSupport = message.guild?.members.cache.some(member => 
         member.roles.cache.some(role => supportRoles.includes(role.name)) && 
         member.presence?.status === 'online'
@@ -218,11 +218,12 @@ client.on(Events.MessageCreate, async message => {
     // Test command for support team to test bot responses
     if (message.content.startsWith('!test ')) {
         // Check if user has support permissions
-        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper'];
-        const hasSupport = message.member?.roles.cache.some(role => supportRoles.includes(role.name));
+        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
+        const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
         
         if (!hasSupport) {
-            return message.reply('❌ Only support team members can use the test command.');
+            return message.reply(`❌ Only support team members can use the test command.\n\n**Your roles:** ${userRoles.length > 0 ? userRoles.join(', ') : 'None'}\n**Required roles:** ${supportRoles.join(', ')}`);
         }
 
         const testQuestion = message.content.slice(6); // Remove '!test '
