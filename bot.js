@@ -133,62 +133,30 @@ client.on(Events.MessageCreate, async message => {
 
     if (shouldRespond) {
         
-        // Try to find multiple relevant solutions
-        const relevantSolutions = getRelevantSolutions(message.content, 3);
+        // Try to find the best solution
+        const bestSolution = findBestSolution(message.content);
         
         // Lower confidence threshold for ticket channels to be more helpful
         const confidenceThreshold = isTicketChannel ? 0.3 : 0.5;
         
-        // Filter solutions that meet the confidence threshold
-        const goodSolutions = relevantSolutions.filter(sol => sol.confidence > confidenceThreshold);
-        
-        if (goodSolutions.length > 0) {
+        if (bestSolution && bestSolution.confidence > confidenceThreshold) {
             // Add a small delay in ticket channels to feel more natural
             if (isTicketChannel) {
                 await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
             }
 
-            // If we have multiple good solutions, show them all
-            if (goodSolutions.length > 1) {
-                const embed = new EmbedBuilder()
-                    .setColor(0x00FF00)
-                    .setTitle('💡 Coach Frank Says - Multiple Solutions Found!')
-                    .setDescription('I found several solutions that might help you:')
-                    .setFooter({ 
-                        text: isTicketChannel ? 
-                            `Try these solutions in order. If none work, tag @Support for human help!` :
-                            `Try these solutions in order. If none help, please provide more details!`
-                    })
-                    .setTimestamp();
+            const embed = new EmbedBuilder()
+                .setColor(0x00FF00)
+                .setTitle('💡 Coach Frank Says')
+                .setDescription(bestSolution.solution)
+                .setFooter({ 
+                    text: isTicketChannel ? 
+                        `If this doesn't solve it, tag @Support for human help!` :
+                        `If this doesn't help, please provide more details!`
+                })
+                .setTimestamp();
 
-                // Add each solution as a field
-                goodSolutions.forEach((solution, index) => {
-                    embed.addFields({
-                        name: `${index + 1}. ${solution.issue}`,
-                        value: solution.solution.length > 1000 ? 
-                            solution.solution.substring(0, 1000) + '...' : 
-                            solution.solution,
-                        inline: false
-                    });
-                });
-
-                await message.reply({ embeds: [embed] });
-            } else {
-                // Single solution - use the original format
-                const bestSolution = goodSolutions[0];
-                const embed = new EmbedBuilder()
-                    .setColor(0x00FF00)
-                    .setTitle('💡 Coach Frank Says')
-                    .setDescription(bestSolution.solution)
-                    .setFooter({ 
-                        text: isTicketChannel ? 
-                            `If this doesn't solve it, tag @Support for human help!` :
-                            `If this doesn't help, please provide more details!`
-                    })
-                    .setTimestamp();
-
-                await message.reply({ embeds: [embed] });
-            }
+            await message.reply({ embeds: [embed] });
             
             // Add helpful reactions
             await message.react('✅'); // Mark as helpful
