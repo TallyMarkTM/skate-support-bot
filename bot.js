@@ -64,6 +64,51 @@ client.on(Events.MessageCreate, async message => {
         message.reply(`**Debug Info:**\n**Channel:** ${message.channel.name}\n**Is Ticket:** ${isTicket}\n**Your Roles:** ${userRoles.join(', ')}\n**Message:** "${message.content}"`);
     }
 
+    // Test command for support team to test bot responses (moved up to bypass restrictions)
+    if (message.content.startsWith('!test ')) {
+        // Check if user has support permissions
+        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
+        const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
+        
+        if (!hasSupport) {
+            return message.reply(`❌ Only support team members can use the test command.\n\n**Your roles:** ${userRoles.length > 0 ? userRoles.join(', ') : 'None'}\n**Required roles:** ${supportRoles.join(', ')}`);
+        }
+
+        const testQuestion = message.content.slice(6); // Remove '!test '
+        const bestSolution = findBestSolution(testQuestion);
+        
+        if (bestSolution && bestSolution.confidence > 0.3) {
+            const embed = new EmbedBuilder()
+                .setColor(0xFF9900) // Orange color to distinguish test responses
+                .setTitle('🧪 Coach Frank Says (TEST MODE)')
+                .setDescription(bestSolution.solution)
+                .addFields(
+                    { name: 'Confidence Score', value: `${(bestSolution.confidence * 100).toFixed(1)}%`, inline: true },
+                    { name: 'Category', value: bestSolution.category, inline: true },
+                    { name: 'Issue Type', value: bestSolution.issue, inline: false }
+                )
+                .setFooter({ text: 'This is a test response - not sent to a real user' })
+                .setTimestamp();
+
+            await message.reply({ embeds: [embed] });
+        } else {
+            const embed = new EmbedBuilder()
+                .setColor(0xFF0000)
+                .setTitle('🧪 Test Result: No Match Found')
+                .setDescription(`No solution found for: "${testQuestion}"`)
+                .addFields({
+                    name: 'Confidence Threshold',
+                    value: 'Minimum confidence needed: 30%',
+                    inline: false
+                })
+                .setFooter({ text: 'Consider adding this to the knowledge base if it\'s a common question' });
+
+            await message.reply({ embeds: [embed] });
+        }
+        return;
+    }
+
     // Hello command
     if (message.content === '!hello') {
         message.reply(`Hello ${message.author.username}! 👋 Welcome to the Skate 3 modding community!`);
@@ -226,50 +271,6 @@ client.on(Events.MessageCreate, async message => {
         return;
     }
 
-    // Test command for support team to test bot responses
-    if (message.content.startsWith('!test ')) {
-        // Check if user has support permissions
-        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
-        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
-        const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
-        
-        if (!hasSupport) {
-            return message.reply(`❌ Only support team members can use the test command.\n\n**Your roles:** ${userRoles.length > 0 ? userRoles.join(', ') : 'None'}\n**Required roles:** ${supportRoles.join(', ')}`);
-        }
-
-        const testQuestion = message.content.slice(6); // Remove '!test '
-        const bestSolution = findBestSolution(testQuestion);
-        
-        if (bestSolution && bestSolution.confidence > 0.3) {
-            const embed = new EmbedBuilder()
-                .setColor(0xFF9900) // Orange color to distinguish test responses
-                .setTitle('🧪 Coach Frank Says (TEST MODE)')
-                .setDescription(bestSolution.solution)
-                .addFields(
-                    { name: 'Confidence Score', value: `${(bestSolution.confidence * 100).toFixed(1)}%`, inline: true },
-                    { name: 'Category', value: bestSolution.category, inline: true },
-                    { name: 'Issue Type', value: bestSolution.issue, inline: false }
-                )
-                .setFooter({ text: 'This is a test response - not sent to a real user' })
-                .setTimestamp();
-
-            await message.reply({ embeds: [embed] });
-        } else {
-            const embed = new EmbedBuilder()
-                .setColor(0xFF0000)
-                .setTitle('🧪 Test Result: No Match Found')
-                .setDescription(`No solution found for: "${testQuestion}"`)
-                .addFields({
-                    name: 'Confidence Threshold',
-                    value: 'Minimum confidence needed: 30%',
-                    inline: false
-                })
-                .setFooter({ text: 'Consider adding this to the knowledge base if it\'s a common question' });
-
-            await message.reply({ embeds: [embed] });
-        }
-        return;
-    }
 
     // Help command
     if (message.content === '!help') {
