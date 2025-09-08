@@ -167,6 +167,18 @@ const knowledgeBase = {
                 confidence: 0.95
             }
         ]
+    },
+
+    // File Extraction Issues
+    extraction: {
+        keywords: ['catastrophic failure', 'extract', 'extraction', 'skate 3 file', 'can\'t extract', 'cannot extract', 'won\'t extract', 'wont extract', 'extraction failed', 'failed to extract', 'error extracting', 'zip error', 'rar error', 'archive error'],
+        solutions: [
+            {
+                issue: "Catastrophic failure when extracting Skate 3 files",
+                solution: "If you get a 'catastrophic failure' error when trying to extract Skate 3 files:\n\n**Primary Solution:**\n• Use **7-Zip** or **WinRAR** to extract the file instead of Windows' built-in extractor\n\n**If 7-Zip/WinRAR doesn't work either:**\n• Your antivirus might be blocking the file - temporarily disable it or add an exception\n• Your hard drive might be too low on space - free up some disk space and try again\n\nDownload 7-Zip: https://www.7-zip.org/\nDownload WinRAR: https://www.win-rar.com/",
+                confidence: 0.95
+            }
+        ]
     }
 };
 
