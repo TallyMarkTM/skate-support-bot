@@ -2,7 +2,7 @@
 const knowledgeBase = {
     // RPCS3 Setup Issues
     rpcs3: {
-        keywords: ['rpcs3', 'rpcs', 'setup', 'download', 'install', 'emulator', 'how do i', 'how to setup', 'setting up'],
+        keywords: ['rpcs3', 'rpcs', 'rpc3', 'rpsc3', 'rpcs', 'setup', 'set up', 'setup', 'download', 'donwload', 'downlaod', 'install', 'instal', 'instll', 'emulator', 'emulater', 'emulatir', 'how do i', 'how do I', 'how to setup', 'how to set up', 'setting up', 'seting up'],
         solutions: [
             {
                 issue: "RPCS3 download/setup issues",
@@ -19,7 +19,7 @@ const knowledgeBase = {
 
     // Savefile/Gamesave Issues
     savefiles: {
-        keywords: ['skate.p', 'savefile', 'save file', 'gamesave', 'where is skate.p', 'install savefile', 'savedata', 'save location'],
+        keywords: ['skate.p', 'skate.p', 'skatep', 'skate p', 'savefile', 'save file', 'savefle', 'safefile', 'gamesave', 'game save', 'gamesav', 'where is skate.p', 'where is skatep', 'install savefile', 'instal savefile', 'savedata', 'save data', 'savedata', 'save location', 'save locaton'],
         solutions: [
             {
                 issue: "Skate.p location and savefile installation",
@@ -31,7 +31,7 @@ const knowledgeBase = {
 
     // Graphics/Savefile Issues
     graphics: {
-        keywords: ['graphics', 'blank deck', 'board graphics', 'missing graphics', 'rpcn', 'deck is blank', 'no graphics', 'graphics are missing'],
+        keywords: ['graphics', 'grafics', 'graphix', 'grphics', 'blank deck', 'blnk deck', 'board graphics', 'bord graphics', 'missing graphics', 'missin graphics', 'rpcn', 'rpc n', 'deck is blank', 'deck is blnk', 'no graphics', 'no grafics', 'graphics are missing', 'grafics are missing'],
         solutions: [
             {
                 issue: "Missing board graphics after savefile replacement",
@@ -48,7 +48,7 @@ const knowledgeBase = {
 
     // Black Screen Issues
     blackscreen: {
-        keywords: ['black screen', 'blackscreen', 'won\'t load', 'freezes', 'crash', 'loading'],
+        keywords: ['black screen', 'blck screen', 'blackscreen', 'blckscreen', 'black scrn', 'won\'t load', 'wont load', 'will not load', 'freezes', 'frezes', 'freeze', 'freez', 'crash', 'crsh', 'crashes', 'loading', 'loding', 'loadng'],
         solutions: [
             {
                 issue: "Black screen on game launch",
@@ -60,7 +60,7 @@ const knowledgeBase = {
 
     // Native Menu Issues
     nativemenu: {
-        keywords: ['native menu', 'nativemenu', 'native', 'menu', 'wont work', 'won\'t work', 'doesn\'t work', 'not working', 'menu not working', 'menu wont open', 'menu won\'t open', 'scanning for aob', 'scanning aob', 'stuck on scanning', 'aobs'],
+        keywords: ['native menu', 'natve menu', 'native mnu', 'nativemenu', 'nativmenu', 'native', 'natve', 'menu', 'mnu', 'wont work', 'wnt work', 'won\'t work', 'doesn\'t work', 'doesnt work', 'dosnt work', 'not working', 'not workng', 'menu not working', 'mnu not working', 'menu wont open', 'menu wnt open', 'menu won\'t open', 'scanning for aob', 'scaning for aob', 'scanning aob', 'scaning aob', 'stuck on scanning', 'stuck on scaning', 'aobs', 'aob'],
         solutions: [
             {
                 issue: "Native menu stuck on 'scanning for AoB's'",
@@ -147,7 +147,7 @@ const knowledgeBase = {
 
     // Graphics Quality Issues
     quality: {
-        keywords: ['blurry', 'blury', 'game is blurry', 'looks bad', 'doesnt look good', 'doesn\'t look good', 'bad quality', 'low quality', 'pixelated', 'resolution', 'graphics quality', 'game quality', 'looks terrible', 'looks awful'],
+        keywords: ['blurry', 'blury', 'blury', 'blurr', 'game is blurry', 'game is blury', 'looks bad', 'looks bd', 'doesnt look good', 'dosnt look good', 'doesn\'t look good', 'bad quality', 'bd quality', 'low quality', 'low qualiy', 'pixelated', 'pixelated', 'pixlated', 'resolution', 'resoluton', 'resoltion', 'graphics quality', 'grafics quality', 'game quality', 'game qualiy', 'looks terrible', 'looks terible', 'looks awful', 'looks awfull'],
         solutions: [
             {
                 issue: "Game is blurry or doesn't look good",
@@ -183,7 +183,7 @@ const knowledgeBase = {
 
     // Game Performance Issues
     gameperformance: {
-        keywords: ['slow motion', 'game slow', 'game is slow', 'slowmo', 'slow mo', 'running slow', 'laggy', 'choppy', 'low fps'],
+        keywords: ['slow motion', 'slow motin', 'slowmotion', 'game slow', 'game slo', 'game is slow', 'game is slo', 'slowmo', 'slow mo', 'slo mo', 'running slow', 'runing slow', 'laggy', 'lagy', 'lag', 'choppy', 'chopy', 'low fps', 'low fp', 'bad fps'],
         solutions: [
             {
                 issue: "Game is in slow motion",
@@ -231,7 +231,7 @@ const knowledgeBase = {
 
     // RPCS3 Crashes and Stability
     crashes: {
-        keywords: ['rpcs3 crashes', 'rpcs3 freezes', 'rpcs3 crash', 'rpcs3 freeze', 'emulator crash', 'emulator freeze', 'rpcs3 stops working', 'rpcs3 not responding'],
+        keywords: ['rpcs3 crashes', 'rpcs3 crshes', 'rpc3 crashes', 'rpcs3 freezes', 'rpcs3 frezes', 'rpc3 freezes', 'rpcs3 crash', 'rpcs3 crsh', 'rpc3 crash', 'rpcs3 freeze', 'rpcs3 freez', 'rpc3 freeze', 'emulator crash', 'emulater crash', 'emulator freeze', 'emulater freeze', 'rpcs3 stops working', 'rpcs3 stops workng', 'rpc3 stops working', 'rpcs3 not responding', 'rpcs3 not respondin', 'rpc3 not responding'],
         solutions: [
             {
                 issue: "RPCS3 crashes or freezes - CPU requirements",
