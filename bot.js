@@ -90,6 +90,27 @@ client.on(Events.MessageCreate, async message => {
         return; // Don't respond again in this ticket
     }
 
+    // Don't respond if support team members are already helping
+    const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper'];
+    const hasSupport = message.guild?.members.cache.some(member => 
+        member.roles.cache.some(role => supportRoles.includes(role.name)) && 
+        member.presence?.status === 'online'
+    );
+    
+    // Don't respond if a support member has recently sent a message in this channel
+    if (isTicketChannel) {
+        const recentMessages = await message.channel.messages.fetch({ limit: 10 });
+        const supportRecentlyActive = recentMessages.some(msg => 
+            !msg.author.bot && 
+            msg.member?.roles.cache.some(role => supportRoles.includes(role.name)) &&
+            (Date.now() - msg.createdTimestamp) < 300000 // 5 minutes
+        );
+        
+        if (supportRecentlyActive) {
+            return; // Don't interfere when support is actively helping
+        }
+    }
+
     // AI-Powered Support System - Only works in ticket channels now
     const shouldRespond = 
         content.includes('help') || content.includes('issue') || content.includes('problem') || 
@@ -280,14 +301,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
             console.error('Error sending support ping:', error);
         }
     } else if (reaction.emoji.name === '✅') {
-        // User clicked check mark - ask if they need more help
+        // User clicked check mark - just acknowledge, don't allow re-responding
         try {
-            const followUpMessage = await reaction.message.channel.send(`✅ Great! Glad that helped ${user}! Is there anything else I can help you with?`);
-            
-            // Allow the bot to respond again in this ticket after a successful solution
-            if (respondedTickets.has(reaction.message.channel.id)) {
-                respondedTickets.delete(reaction.message.channel.id);
-            }
+            const followUpMessage = await reaction.message.channel.send(`✅ Great! Glad that helped ${user}! If you need more help, please tag @Support.`);
         } catch (error) {
             console.error('Error sending follow-up message:', error);
         }
