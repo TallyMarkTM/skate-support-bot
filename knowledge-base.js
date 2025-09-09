@@ -19,7 +19,7 @@ const knowledgeBase = {
 
     // Savefile/Gamesave Issues
     savefiles: {
-        keywords: ['skate.p', 'skate.p', 'skatep', 'skate p', 'savefile', 'save file', 'savefle', 'safefile', 'gamesave', 'game save', 'gamesav', 'where is skate.p', 'where is skatep', 'install savefile', 'instal savefile', 'savedata', 'save data', 'savedata', 'save location', 'save locaton'],
+        keywords: ['skate.p', 'skate.p', 'skatep', 'skate p', 'skater.p', 'skaterp', 'skater p', 'savefile', 'save file', 'savefle', 'safefile', 'gamesave', 'game save', 'gamesav', 'where is skate.p', 'where is skatep', 'where is skater.p', 'where is skaterp', 'install savefile', 'instal savefile', 'savedata', 'save data', 'savedata', 'save location', 'save locaton'],
         solutions: [
             {
                 issue: "Skate.p location and savefile installation",
@@ -60,7 +60,7 @@ const knowledgeBase = {
 
     // Native Menu Issues
     nativemenu: {
-        keywords: ['native menu', 'natve menu', 'native mnu', 'nativemenu', 'nativmenu', 'native', 'natve', 'menu', 'mnu', 'wont work', 'wnt work', 'won\'t work', 'doesn\'t work', 'doesnt work', 'dosnt work', 'not working', 'not workng', 'menu not working', 'mnu not working', 'menu wont open', 'menu wnt open', 'menu won\'t open', 'scanning for aob', 'scaning for aob', 'scanning aob', 'scaning aob', 'stuck on scanning', 'stuck on scaning', 'aobs', 'aob', 'menu broken', 'menu broke', 'mods not working', 'mods dont work', 'mods wont work', 'cant access menu', 'menu not opening', 'menu loading forever', 'menu stuck', 'please update your game', 'update your game', 'menu says update', 'menu error', 'menu crash'],
+        keywords: ['native menu', 'natve menu', 'native mnu', 'nativemenu', 'nativmenu', 'native', 'natve', 'menu', 'mnu', 's3m', 'wont work', 'wnt work', 'won\'t work', 'doesn\'t work', 'doesnt work', 'dosnt work', 'not working', 'not workng', 'menu not working', 'mnu not working', 'menu wont open', 'menu wnt open', 'menu won\'t open', 'scanning for aob', 'scaning for aob', 'scanning aob', 'scaning aob', 'stuck on scanning', 'stuck on scaning', 'aobs', 'aob', 'menu broken', 'menu broke', 'mods not working', 'mods dont work', 'mods wont work', 'cant access menu', 'menu not opening', 'menu loading forever', 'menu stuck', 'please update your game', 'update your game', 'menu says update', 'menu error', 'menu crash'],
         solutions: [
             {
                 issue: "Native menu stuck on 'scanning for AoB's'",
@@ -159,7 +159,7 @@ const knowledgeBase = {
 
     // Updates and DLC (Universal)
     updates: {
-        keywords: ['update', 'updates', 'dlc', 'version', 'blus', 'bles', 'game update', 'pkg', 'how to update', 'update my game', 'game version', 'xenia', 'xenia update', 'xenia dlc', 'xbox', 'xbox 360', 'console', 'get updates', 'get dlc'],
+        keywords: ['update', 'updates', 'dlc', 'version', 'blus', 'bles', 'game update', 'pkg', 'how to update', 'update my game', 'game version', 'xenia', 'xenia update', 'xenia dlc', 'xbox', 'xbox 360', 'console', 'get updates', 'get dlc', '1.05', '1,05', 'need 1.05', 'need 1,05', 's3m', 'version 1.05', 'version 1,05', 'update to 1.05', 'update to 1,05'],
         solutions: [
             {
                 issue: "Game updates and DLC for all platforms",
