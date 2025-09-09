@@ -66,7 +66,7 @@ client.on(Events.MessageCreate, async message => {
 
     // Flow debug command for support to trace why bot isn't responding
     if (message.content === '!flowdebug') {
-        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const supportRoles = ['Support', 'Moderator', 'Server Manager'];
         const userRoles = message.member?.roles.cache.map(role => role.name) || [];
         const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
         
@@ -107,7 +107,7 @@ client.on(Events.MessageCreate, async message => {
     // Test command for support team to test bot responses (moved up to bypass restrictions)
     if (message.content.startsWith('!test ')) {
         // Check if user has support permissions
-        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const supportRoles = ['Support', 'Moderator', 'Server Manager'];
         const userRoles = message.member?.roles.cache.map(role => role.name) || [];
         const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
         
@@ -151,7 +151,7 @@ client.on(Events.MessageCreate, async message => {
 
     // KB debug command for support to view relevance scoring and matches
     if (message.content.startsWith('!kbtest ')) {
-        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const supportRoles = ['Support', 'Moderator', 'Server Manager'];
         const userRoles = message.member?.roles.cache.map(role => role.name) || [];
         const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
 
@@ -222,7 +222,7 @@ client.on(Events.MessageCreate, async message => {
     // Only block bot responses if the current message author is a support member
     // (Don't respond to support team questions, but DO respond to regular users even if support is present)
     if (isTicketChannel) {
-        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const supportRoles = ['Support', 'Moderator', 'Server Manager'];
         const userRoles = message.member?.roles.cache.map(role => role.name) || [];
         const messageAuthorIsSupport = userRoles.some(roleName => supportRoles.includes(roleName));
         
