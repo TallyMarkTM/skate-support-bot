@@ -2,7 +2,7 @@
 const knowledgeBase = {
     // RPCS3 Setup Issues
     rpcs3: {
-        keywords: ['rpcs3', 'rpcs', 'rpc3', 'rpsc3', 'rpcs', 'setup', 'set up', 'setup', 'download', 'donwload', 'downlaod', 'install', 'instal', 'instll', 'emulator', 'emulater', 'emulatir', 'how do i', 'how do I', 'how to setup', 'how to set up', 'setting up', 'seting up'],
+        keywords: ['rpcs3', 'rpcs', 'rpc3', 'rpsc3', 'rpcs', 'setup', 'set up', 'setup', 'download', 'donwload', 'downlaod', 'install', 'instal', 'instll', 'emulator', 'emulater', 'emulatir', 'how do i', 'how do I', 'how to setup', 'how to set up', 'setting up', 'seting up', 'get rpcs3', 'getting rpcs3', 'where to download', 'where can i get', 'need rpcs3', 'rpcs3 help', 'rpcs3 guide', 'first time', 'new to rpcs3', 'never used rpcs3', 'rpcs3 tutorial', 'rpcs3 installation'],
         solutions: [
             {
                 issue: "RPCS3 download/setup issues",
@@ -31,7 +31,7 @@ const knowledgeBase = {
 
     // Graphics/Savefile Issues
     graphics: {
-        keywords: ['graphics', 'grafics', 'graphix', 'grphics', 'blank deck', 'blnk deck', 'board graphics', 'bord graphics', 'missing graphics', 'missin graphics', 'rpcn', 'rpc n', 'deck is blank', 'deck is blnk', 'no graphics', 'no grafics', 'graphics are missing', 'grafics are missing'],
+        keywords: ['graphics', 'grafics', 'graphix', 'grphics', 'blank deck', 'blnk deck', 'board graphics', 'bord graphics', 'missing graphics', 'missin graphics', 'rpcn', 'rpc n', 'deck is blank', 'deck is blnk', 'no graphics', 'no grafics', 'graphics are missing', 'grafics are missing', 'board is blank', 'skateboard blank', 'skateboard is blank', 'deck has no graphics', 'no deck graphics', 'board has no graphics', 'graphics not showing', 'graphics not loading', 'missing board graphics', 'blank board', 'empty deck', 'white deck', 'plain deck'],
         solutions: [
             {
                 issue: "Missing board graphics after savefile replacement",
@@ -48,7 +48,7 @@ const knowledgeBase = {
 
     // Black Screen Issues
     blackscreen: {
-        keywords: ['black screen', 'blck screen', 'blackscreen', 'blckscreen', 'black scrn', 'won\'t load', 'wont load', 'will not load', 'freezes', 'frezes', 'freeze', 'freez', 'crash', 'crsh', 'crashes', 'loading', 'loding', 'loadng'],
+        keywords: ['black screen', 'blck screen', 'blackscreen', 'blckscreen', 'black scrn', 'won\'t load', 'wont load', 'will not load', 'freezes', 'frezes', 'freeze', 'freez', 'crash', 'crsh', 'crashes', 'loading', 'loding', 'loadng', 'stuck on loading', 'stuck loading', 'game not starting', 'game wont start', 'nothing happens', 'blank screen', 'screen is black', 'just black', 'only black screen', 'game freezes', 'stuck on black', 'black when loading', 'loading forever', 'infinite loading'],
         solutions: [
             {
                 issue: "Black screen on game launch",
@@ -60,7 +60,7 @@ const knowledgeBase = {
 
     // Native Menu Issues
     nativemenu: {
-        keywords: ['native menu', 'natve menu', 'native mnu', 'nativemenu', 'nativmenu', 'native', 'natve', 'menu', 'mnu', 'wont work', 'wnt work', 'won\'t work', 'doesn\'t work', 'doesnt work', 'dosnt work', 'not working', 'not workng', 'menu not working', 'mnu not working', 'menu wont open', 'menu wnt open', 'menu won\'t open', 'scanning for aob', 'scaning for aob', 'scanning aob', 'scaning aob', 'stuck on scanning', 'stuck on scaning', 'aobs', 'aob'],
+        keywords: ['native menu', 'natve menu', 'native mnu', 'nativemenu', 'nativmenu', 'native', 'natve', 'menu', 'mnu', 'wont work', 'wnt work', 'won\'t work', 'doesn\'t work', 'doesnt work', 'dosnt work', 'not working', 'not workng', 'menu not working', 'mnu not working', 'menu wont open', 'menu wnt open', 'menu won\'t open', 'scanning for aob', 'scaning for aob', 'scanning aob', 'scaning aob', 'stuck on scanning', 'stuck on scaning', 'aobs', 'aob', 'menu broken', 'menu broke', 'mods not working', 'mods dont work', 'mods wont work', 'cant access menu', 'menu not opening', 'menu loading forever', 'menu stuck', 'please update your game', 'update your game', 'menu says update', 'menu error', 'menu crash'],
         solutions: [
             {
                 issue: "Native menu stuck on 'scanning for AoB's'",
@@ -147,7 +147,7 @@ const knowledgeBase = {
 
     // Graphics Quality Issues
     quality: {
-        keywords: ['blurry', 'blury', 'blury', 'blurr', 'game is blurry', 'game is blury', 'looks bad', 'looks bd', 'doesnt look good', 'dosnt look good', 'doesn\'t look good', 'bad quality', 'bd quality', 'low quality', 'low qualiy', 'pixelated', 'pixelated', 'pixlated', 'resolution', 'resoluton', 'resoltion', 'graphics quality', 'grafics quality', 'game quality', 'game qualiy', 'looks terrible', 'looks terible', 'looks awful', 'looks awfull'],
+        keywords: ['blurry', 'blury', 'blury', 'blurr', 'game is blurry', 'game is blury', 'looks bad', 'looks bd', 'doesnt look good', 'dosnt look good', 'doesn\'t look good', 'bad quality', 'bd quality', 'low quality', 'low qualiy', 'pixelated', 'pixelated', 'pixlated', 'resolution', 'resoluton', 'resoltion', 'graphics quality', 'grafics quality', 'game quality', 'game qualiy', 'looks terrible', 'looks terible', 'looks awful', 'looks awfull', 'fuzzy', 'unclear', 'not sharp', 'low res', 'low resolution', 'poor quality', 'bad graphics', 'graphics look bad', 'game looks fuzzy', 'improve graphics', 'better graphics', 'higher resolution', 'increase resolution'],
         solutions: [
             {
                 issue: "Game is blurry or doesn't look good",
@@ -171,11 +171,11 @@ const knowledgeBase = {
 
     // File Extraction Issues
     extraction: {
-        keywords: ['catastrophic failure', 'catasrtophic failure', 'catastrophic', 'catasrtophic', 'extract', 'extraction', 'skate 3 file', 'can\'t extract', 'cannot extract', 'won\'t extract', 'wont extract', 'extraction failed', 'failed to extract', 'error extracting', 'zip error', 'rar error', 'archive error', 'file catastrophic', 'file catasrtophic', 'put it into rpcs3', 'take the skate 3'],
+        keywords: ['catastrophic failure', 'catasrtophic failure', 'catastrophic', 'catasrtophic', 'extract', 'extraction', 'skate 3 file', 'can\'t extract', 'cannot extract', 'won\'t extract', 'wont extract', 'extraction failed', 'failed to extract', 'error extracting', 'zip error', 'rar error', 'archive error', 'file catastrophic', 'file catasrtophic', 'put it into rpcs3', 'take the skate 3', 'unzip error', 'unzip failed', 'unrar error', 'unrar failed', 'corrupt archive', 'corrupted file', 'file is corrupted', 'broken zip', 'broken rar', 'extraction error', 'cant unzip', 'cant unrar', 'how to extract', 'how do i extract', 'extract files', 'unpack files', 'decompress files'],
         solutions: [
             {
                 issue: "Catastrophic failure when extracting Skate 3 files",
-                solution: "If you get a 'catastrophic failure' error when trying to extract Skate 3 files:\n\n**Primary Solution:**\n• Use **7-Zip** or **WinRAR** to extract the file instead of Windows' built-in extractor\n\n**If 7-Zip/WinRAR doesn't work either:**\n• Your antivirus might be blocking the file - temporarily disable it or add an exception\n• Your hard drive might be too low on space - free up some disk space and try again\n\nDownload 7-Zip: https://www.7-zip.org/\nDownload WinRAR: https://www.win-rar.com/",
+                solution: "If you get a 'catastrophic failure' error when trying to extract Skate 3 files:\n\n**Primary Solution:**\n• Use **7-Zip** or **WinRAR** to extract the file instead of Windows' built-in extractor\n• Download 7-Zip: https://www.7-zip.org/\n• Download WinRAR: https://www.win-rar.com/\n\n**Important:** Your antivirus software might interfere with the extraction process. If 7-Zip/WinRAR still doesn't work:\n• Temporarily disable your antivirus while extracting\n• Add the file/folder to your antivirus exceptions list\n• Some antivirus programs are more aggressive - try disabling real-time protection during extraction\n\n**Other possible causes:**\n• Your hard drive might be too low on space - free up some disk space and try again\n• The download may be corrupted - try re-downloading the file",
                 confidence: 0.99
             }
         ]
@@ -273,12 +273,31 @@ function findBestSolution(userMessage) {
     // Check each category
     for (const [category, data] of Object.entries(knowledgeBase)) {
         let score = 0;
+        let exactMatches = 0;
+        let partialMatches = 0;
         
-        // Count keyword matches
+        // Count keyword matches with different weights
         for (const keyword of data.keywords) {
-            if (message.includes(keyword.toLowerCase())) {
-                score += 1;
+            const keywordLower = keyword.toLowerCase();
+            if (message.includes(keywordLower)) {
+                // Give higher weight to longer, more specific keywords
+                const keywordWeight = Math.max(1, keywordLower.length / 5);
+                
+                // Bonus for exact word matches vs partial matches
+                const wordBoundaryRegex = new RegExp('\\b' + keywordLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
+                if (wordBoundaryRegex.test(message)) {
+                    exactMatches++;
+                    score += keywordWeight * 1.5; // Bonus for exact word match
+                } else {
+                    partialMatches++;
+                    score += keywordWeight;
+                }
             }
+        }
+        
+        // Bonus for multiple keyword matches in the same category
+        if (exactMatches + partialMatches > 1) {
+            score *= 1.2; // 20% bonus for multiple matches
         }
         
         // If we found keyword matches, check solutions
@@ -291,7 +310,10 @@ function findBestSolution(userMessage) {
                         category,
                         solution: solution.solution,
                         confidence: solution.confidence,
-                        issue: solution.issue
+                        issue: solution.issue,
+                        keywordScore: score,
+                        exactMatches,
+                        partialMatches
                     };
                 }
             }
@@ -308,13 +330,31 @@ function getRelevantSolutions(userMessage, limit = 3) {
 
     for (const [category, data] of Object.entries(knowledgeBase)) {
         let score = 0;
-        
+        let exactMatches = 0;
+        let partialMatches = 0;
+
+        // Count keyword matches with similar weighting as findBestSolution
         for (const keyword of data.keywords) {
-            if (message.includes(keyword.toLowerCase())) {
-                score += 1;
+            const keywordLower = keyword.toLowerCase();
+            if (message.includes(keywordLower)) {
+                const keywordWeight = Math.max(1, keywordLower.length / 5);
+
+                const wordBoundaryRegex = new RegExp('\\b' + keywordLower.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&') + '\\b');
+                if (wordBoundaryRegex.test(message)) {
+                    exactMatches++;
+                    score += keywordWeight * 1.5; // bonus for exact word match
+                } else {
+                    partialMatches++;
+                    score += keywordWeight;
+                }
             }
         }
-        
+
+        // Bonus for multiple matches in the same category
+        if (exactMatches + partialMatches > 1) {
+            score *= 1.2;
+        }
+
         if (score > 0) {
             for (const solution of data.solutions) {
                 solutions.push({
@@ -322,7 +362,9 @@ function getRelevantSolutions(userMessage, limit = 3) {
                     solution: solution.solution,
                     confidence: solution.confidence * score,
                     issue: solution.issue,
-                    keywordMatches: score
+                    keywordScore: score,
+                    exactMatches,
+                    partialMatches
                 });
             }
         }

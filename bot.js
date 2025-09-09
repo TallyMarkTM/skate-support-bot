@@ -109,6 +109,39 @@ client.on(Events.MessageCreate, async message => {
         return;
     }
 
+    // KB debug command for support to view relevance scoring and matches
+    if (message.content.startsWith('!kbtest ')) {
+        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
+        const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
+
+        if (!hasSupport) {
+            return message.reply('❌ Only support team members can use the KB debug command.');
+        }
+
+        const query = message.content.slice(8).trim();
+        const results = getRelevantSolutions(query, 5);
+
+        if (results.length === 0) {
+            return message.reply('No matching KB entries found for that query.');
+        }
+
+        const fields = results.map((res, idx) => ({
+            name: `${idx + 1}. ${res.issue} (${res.category})`,
+            value: `Score: ${res.keywordScore.toFixed(2)} • Exact: ${res.exactMatches} • Partial: ${res.partialMatches} • Confidence: ${res.confidence}`
+        }));
+
+        const embed = new EmbedBuilder()
+            .setTitle('KB Debug: Relevance Results')
+            .setColor(0xFFA500)
+            .setDescription(`Query: "${query}"`)
+            .addFields(fields)
+            .setTimestamp();
+
+        await message.reply({ embeds: [embed] });
+        return;
+    }
+
     // Hello command
     if (message.content === '!hello') {
         message.reply(`Hello ${message.author.username}! 👋 Welcome to the Skate 3 modding community!`);
