@@ -64,6 +64,32 @@ client.on(Events.MessageCreate, async message => {
         message.reply(`**Debug Info:**\n**Channel:** ${message.channel.name}\n**Is Ticket:** ${isTicket}\n**Your Roles:** ${userRoles.join(', ')}\n**Message:** "${message.content}"`);
     }
 
+    // Flow debug command for support to trace why bot isn't responding
+    if (message.content === '!flowdebug') {
+        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
+        const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
+        
+        if (!hasSupport) {
+            return message.reply('❌ Only support team members can use flow debug.');
+        }
+
+        const isTicket = message.channel.name && (
+            message.channel.name.startsWith('ticket-') || 
+            message.channel.name.startsWith('closed-')
+        );
+        const alreadyResponded = isTicket && respondedTickets.has(message.channel.id);
+        const messageAuthorIsSupport = userRoles.some(roleName => supportRoles.includes(roleName));
+        
+        message.reply(`**Flow Debug:**
+**Channel:** ${message.channel.name}
+**Is Ticket Channel:** ${isTicket}
+**Already Responded:** ${alreadyResponded}
+**Message Author Is Support:** ${messageAuthorIsSupport}
+**Channel Type:** ${message.channel.type}
+**Responded Tickets Set Size:** ${respondedTickets.size}`);
+    }
+
     // Test command for support team to test bot responses (moved up to bypass restrictions)
     if (message.content.startsWith('!test ')) {
         // Check if user has support permissions
@@ -179,20 +205,16 @@ client.on(Events.MessageCreate, async message => {
         return; // Don't respond again in this ticket
     }
 
-    // Only check if support is actively helping in THIS specific ticket channel
+    // Only block bot responses if the current message author is a support member
+    // (Don't respond to support team questions, but DO respond to regular users even if support is present)
     if (isTicketChannel) {
         const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
-        const recentMessages = await message.channel.messages.fetch({ limit: 5 });
+        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
+        const messageAuthorIsSupport = userRoles.some(roleName => supportRoles.includes(roleName));
         
-        // Only skip if support has been actively responding in the last 2 minutes in THIS channel
-        const supportActivelyHelping = recentMessages.some(msg => 
-            !msg.author.bot && 
-            msg.member?.roles.cache.some(role => supportRoles.includes(role.name)) &&
-            (Date.now() - msg.createdTimestamp) < 120000 // 2 minutes instead of 5
-        );
-        
-        if (supportActivelyHelping) {
-            return; // Don't interfere when support is actively helping in this specific ticket
+        // Don't respond to questions FROM support team members (but do respond to regular users)
+        if (messageAuthorIsSupport) {
+            return; // Support team members don't need bot help
         }
     }
 
