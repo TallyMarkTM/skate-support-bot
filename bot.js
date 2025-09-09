@@ -146,24 +146,20 @@ client.on(Events.MessageCreate, async message => {
         return; // Don't respond again in this ticket
     }
 
-    // Don't respond if support team members are already helping
-    const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
-    const hasSupport = message.guild?.members.cache.some(member => 
-        member.roles.cache.some(role => supportRoles.includes(role.name)) && 
-        member.presence?.status === 'online'
-    );
-    
-    // Don't respond if a support member has recently sent a message in this channel
+    // Only check if support is actively helping in THIS specific ticket channel
     if (isTicketChannel) {
-        const recentMessages = await message.channel.messages.fetch({ limit: 10 });
-        const supportRecentlyActive = recentMessages.some(msg => 
+        const supportRoles = ['Support', 'Moderator', 'Admin', 'Administrator', 'Staff', 'Helper', 'Server Manager', 'Server Booster', 'Verified Skater'];
+        const recentMessages = await message.channel.messages.fetch({ limit: 5 });
+        
+        // Only skip if support has been actively responding in the last 2 minutes in THIS channel
+        const supportActivelyHelping = recentMessages.some(msg => 
             !msg.author.bot && 
             msg.member?.roles.cache.some(role => supportRoles.includes(role.name)) &&
-            (Date.now() - msg.createdTimestamp) < 300000 // 5 minutes
+            (Date.now() - msg.createdTimestamp) < 120000 // 2 minutes instead of 5
         );
         
-        if (supportRecentlyActive) {
-            return; // Don't interfere when support is actively helping
+        if (supportActivelyHelping) {
+            return; // Don't interfere when support is actively helping in this specific ticket
         }
     }
 
