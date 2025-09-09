@@ -79,15 +79,29 @@ client.on(Events.MessageCreate, async message => {
             message.channel.name.startsWith('closed-')
         );
         const alreadyResponded = isTicket && respondedTickets.has(message.channel.id);
-        const messageAuthorIsSupport = userRoles.some(roleName => supportRoles.includes(roleName));
+        
+        // Get recent messages to see who asked the question
+        const recentMessages = await message.channel.messages.fetch({ limit: 10 });
+        const lastUserMessage = [...recentMessages.values()].find(msg => 
+            !msg.author.bot && 
+            !msg.content.startsWith('!') && 
+            msg.id !== message.id
+        );
+        
+        let lastUserInfo = 'No recent user message found';
+        if (lastUserMessage) {
+            const lastUserRoles = lastUserMessage.member?.roles.cache.map(role => role.name) || [];
+            const lastUserIsSupport = lastUserRoles.some(roleName => supportRoles.includes(roleName));
+            lastUserInfo = `User: ${lastUserMessage.author.username}, Roles: [${lastUserRoles.join(', ')}], Is Support: ${lastUserIsSupport}, Message: "${lastUserMessage.content}"`;
+        }
         
         message.reply(`**Flow Debug:**
 **Channel:** ${message.channel.name}
 **Is Ticket Channel:** ${isTicket}
 **Already Responded:** ${alreadyResponded}
-**Message Author Is Support:** ${messageAuthorIsSupport}
 **Channel Type:** ${message.channel.type}
-**Responded Tickets Set Size:** ${respondedTickets.size}`);
+**Responded Tickets Set Size:** ${respondedTickets.size}
+**Last User Message:** ${lastUserInfo}`);
     }
 
     // Test command for support team to test bot responses (moved up to bypass restrictions)
