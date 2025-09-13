@@ -117,19 +117,14 @@ client.on(Events.MessageCreate, async message => {
         // Simulate a normal user message in a ticket channel
         // Remove support role for this simulation
         const simulatedUserRoles = userRoles.filter(role => !supportRoles.includes(role));
-        const simulatedMessage = {
-            ...message,
-            content: message.content.slice(6), // Remove '!test '
-            member: { ...message.member, roles: { cache: new Map(simulatedUserRoles.map(role => [role, { name: role }])) } }
-        };
+        // Temporarily override message.member.roles.cache for this command
+        message.member.roles.cache = new Map(simulatedUserRoles.map(role => [role, { name: role }]));
+        // Set message.content to the test question
+        message.content = message.content.slice(6);
 
-        // Call the ticket channel logic manually
-        // You can refactor your ticket channel logic into a function, e.g.:
-        // handleTicketChannelMessage(simulatedMessage);
-
-        // For now, just send the dropdown and solution as a normal user would get
+        // Now, run the normal ticket channel logic
+        // (Copy the code from your main ticket channel block here)
         if (isTicketChannel) {
-            // Only send dropdown if we haven't already responded in this ticket
             if (respondedTickets.has(message.channel.id)) return;
 
             const categoryMenu = new ActionRowBuilder().addComponents(
