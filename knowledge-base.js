@@ -261,6 +261,18 @@ const knowledgeBase = {
                 confidence: 0.9
             }
         ]
+    },
+
+    // Audio Issues
+    audio: {
+        keywords: ['audio', 'sound', 'audio issues', 'bad audio', 'popping', 'crackling', 'stuttering', 'audio stuttering', 'sound stuttering', 'audio crackling', 'sound crackling', 'audio popping', 'sound popping', 'audio buffering', 'sound buffering', 'audio problems', 'sound problems', 'no sound', 'no audio', 'muted', 'quiet audio', 'low volume', 'audio quality', 'sound quality'],
+        solutions: [
+            {
+                issue: "RPCS3 audio issues like popping, crackling, or stuttering",
+                solution: "To fix RPCS3 audio issues like popping, crackling, or stuttering, you can adjust the audio buffering settings by reducing the slider to 20ms or less in the Configuration > Audio menu. You can also try changing the audio output driver to Cubeb or try different SPU settings, such as adjusting the SPU thread count or disabling SPU loop detection, to better suit your system's CPU and the specific game you are playing.\n\n**Adjusting Audio Settings:**\n1. Open RPCS3 and go to the main menu\n2. Click on Configuration\n3. Select the Audio tab\n4. Reduce the buffering slider from 100ms to 20ms or less\n5. Click Apply and then Save\n\nIf this does not work then you will need a better CPU.",
+                confidence: 0.95
+            }
+        ]
     }
 };
 

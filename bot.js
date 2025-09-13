@@ -73,7 +73,8 @@ function sendDropdown(message, isResend = false) {
                 { label: 'Display Issues', value: 'display' },
                 { label: 'RPCS3 Software Detection', value: 'software' },
                 { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
-                { label: 'Game Crashes After Loading', value: 'gamecrashes' }
+                { label: 'Game Crashes After Loading', value: 'gamecrashes' },
+                { label: 'Audio Issues', value: 'audio' }
             ])
     );
     
@@ -353,7 +354,8 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                             { label: 'Display Issues', value: 'display' },
                             { label: 'RPCS3 Software Detection', value: 'software' },
                             { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
-                            { label: 'Game Crashes After Loading', value: 'gamecrashes' }
+                            { label: 'Game Crashes After Loading', value: 'gamecrashes' },
+                            { label: 'Audio Issues', value: 'audio' }
                         ])
                 );
                 
