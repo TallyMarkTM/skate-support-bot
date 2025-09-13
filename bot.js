@@ -115,15 +115,10 @@ client.on(Events.MessageCreate, async message => {
         }
 
         // Simulate a normal user message in a ticket channel
-        // Remove support role for this simulation
-        const simulatedUserRoles = userRoles.filter(role => !supportRoles.includes(role));
-        message.member.roles.cache = new Map(simulatedUserRoles.map(role => [role, { name: role }]));
-        message.content = message.content.slice(6);
+        const testQuestion = message.content.slice(6);
 
-        // Run the normal ticket channel logic (ignore respondedTickets for testing)
         if (isTicketChannel) {
             // --- Automatic solution response ---
-            const testQuestion = message.content;
             const bestSolution = findBestSolution(testQuestion);
             if (bestSolution && bestSolution.confidence > 0.3) {
                 const embed = new EmbedBuilder()
@@ -172,9 +167,9 @@ client.on(Events.MessageCreate, async message => {
             });
 
             // Do NOT add to respondedTickets so you can test multiple times
-            return;
+            return; // <-- This is critical!
         }
-        return;
+        return; // <-- This is also critical!
     }
 
     // KB debug command for support to view relevance scoring and matches
