@@ -145,15 +145,8 @@ client.on(Events.MessageCreate, async message => {
     // Basic commands
     if (message.content === '!ping') return message.reply('Pong! 🏓');
     if (message.content === '!hello') return message.reply(`Hello ${message.author.username}! 👋 Welcome to the Skate 3 modding community!`);
-    if (message.content === '!debug') {
-        const roles = getUserRoles(message);
-        const isSupportUser = isSupport(message);
-        const channelType = message.channel.type;
-        const channelName = message.channel.name;
-        return message.reply(`🔍 **Debug Info:**\n**User:** ${message.author.username}\n**Roles:** ${roles.join(', ') || 'None'}\n**Is Support:** ${isSupportUser}\n**Channel:** ${channelName} (${channelType})\n**Bot is working!**`);
-    }
     if (message.content === '!testdropdown') {
-        // Bypass all checks - just send dropdown for testing
+        // Send dropdown for testing
         const dropdownMessage = await sendDropdown(message);
         setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
         return message.reply('🧪 **Dropdown Test** - Testing dropdown without any restrictions!');
@@ -180,7 +173,7 @@ client.on(Events.MessageCreate, async message => {
                 { name: '🔧 Automatic Support', value: 'Just describe your issue and I\'ll try to help! Keywords like "rpcs3", "graphics", "mods", etc. trigger automatic responses.', inline: false },
                 { name: '!ask [question]', value: 'Search for specific solutions (e.g., `!ask rpcs3 black screen`)', inline: false },
                 { name: '!test [question]', value: '🧪 **Support Only** - Test bot responses with detailed info (e.g., `!test catastrophic failure`)', inline: false },
-                { name: '!testbot', value: '🧪 **Support Only** - Activate testing mode to test dropdown interactions in any channel', inline: false },
+                { name: '!testdropdown', value: '🧪 **Testing Command** - Send dropdown for testing interactions', inline: false },
                 { name: '!support', value: 'Force trigger the support system', inline: false },
                 { name: '!ping', value: 'Test if the bot is working', inline: false },
                 { name: '!hello', value: 'Get a friendly greeting', inline: false },
@@ -236,24 +229,6 @@ client.on(Events.MessageCreate, async message => {
         return;
     }
 
-    // --- Support: !testbot command ---
-    if (message.content === '!testbot') {
-        console.log('Testbot command received from:', message.author.username);
-        console.log('User roles:', getUserRoles(message));
-        console.log('Is support:', isSupport(message));
-        
-        if (!isSupport(message)) {
-            console.log('User is not support, denying access');
-            return message.reply('❌ Only support team members can use the testbot command.');
-        }
-
-        console.log('User is support, sending dropdown');
-        // Send dropdown for testing (works in any channel)
-        const dropdownMessage = await sendDropdown(message);
-        setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
-        await message.reply('🧪 **Testing Mode Activated** - You can now test the bot dropdown!');
-        return;
-    }
 
     // --- Allow support team to test in their own tickets ---
     if (isTicketChannel(message.channel) && isSupport(message)) {
