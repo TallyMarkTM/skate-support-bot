@@ -81,7 +81,7 @@ function sendDropdown(message, isResend = false) {
     const confirmButton = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('confirm_selection')
-            .setLabel('Get Help')
+            .setLabel('Confirm Selection')
             .setStyle(ButtonStyle.Primary)
             .setEmoji('✅')
     );
@@ -261,7 +261,7 @@ client.on('interactionCreate', async interaction => {
         // Check if user has selected categories
         if (!userSelections || userSelections.length === 0) {
             await interaction.reply({ 
-                content: 'Please select one or more categories from the dropdown menu above first, then click "Get Help" again.', 
+                content: 'Please select one or more categories from the dropdown menu above first, then click "Confirm Selection" again.', 
                 ephemeral: true 
             });
             return;
@@ -312,7 +312,7 @@ client.on('interactionCreate', async interaction => {
         
         // Acknowledge the selection (ephemeral so only user sees it)
         await interaction.reply({ 
-            content: `✅ Selected ${interaction.values.length} categor${interaction.values.length === 1 ? 'y' : 'ies'}. Now click "Get Help" below to get your solution!`, 
+            content: `✅ Selected ${interaction.values.length} categor${interaction.values.length === 1 ? 'y' : 'ies'}. Now click "Confirm Selection" below to get your solution!`, 
             ephemeral: true 
         });
     }
