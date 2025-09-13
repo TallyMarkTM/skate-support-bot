@@ -58,7 +58,7 @@ function sendDropdown(message) {
                 { label: 'Mod Installation Issues', value: 'mods' },
                 { label: 'High FPS and Render Issues', value: 'performance' },
                 { label: 'General Help', value: 'general' },
-                { label: "CFSS (Coach Frank's Skate Shop) Issues", value: 'cfss' },
+                { label: "CFSS/CUSTOM TEXTURES", value: 'cfss' },
                 { label: 'Maps and Mods', value: 'maps' },
                 { label: 'Graphics Quality Issues', value: 'quality' },
                 { label: 'Updates and DLC', value: 'updates' },
