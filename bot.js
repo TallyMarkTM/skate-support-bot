@@ -310,8 +310,7 @@ client.on('interactionCreate', async interaction => {
             });
         }
         
-        // Clear the interaction after processing
-        activeInteractions.delete(channelId);
+        // Don't clear activeInteractions yet - keep it for feedback system
     }
 });
 
