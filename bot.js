@@ -117,16 +117,26 @@ client.on(Events.MessageCreate, async message => {
         // Simulate a normal user message in a ticket channel
         // Remove support role for this simulation
         const simulatedUserRoles = userRoles.filter(role => !supportRoles.includes(role));
-        // Temporarily override message.member.roles.cache for this command
         message.member.roles.cache = new Map(simulatedUserRoles.map(role => [role, { name: role }]));
-        // Set message.content to the test question
         message.content = message.content.slice(6);
 
-        // Now, run the normal ticket channel logic
-        // (Copy the code from your main ticket channel block here)
+        // Run the normal ticket channel logic (ignore respondedTickets for testing)
         if (isTicketChannel) {
-            if (respondedTickets.has(message.channel.id)) return;
+            // --- Automatic solution response ---
+            const testQuestion = message.content;
+            const bestSolution = findBestSolution(testQuestion);
+            if (bestSolution && bestSolution.confidence > 0.3) {
+                const embed = new EmbedBuilder()
+                    .setColor(0x00FF00)
+                    .setTitle('💡 Coach Frank Says')
+                    .setDescription(bestSolution.solution)
+                    .setFooter({ text: 'Tag @Support if you need more help!' });
+                await message.reply({ embeds: [embed] });
+            } else {
+                await message.reply('❓ No solutions found. Try rephrasing your question or tag @Support for human assistance.');
+            }
 
+            // --- Dropdown menu ---
             const categoryMenu = new ActionRowBuilder().addComponents(
                 new StringSelectMenuBuilder()
                     .setCustomId('help_category')
@@ -161,7 +171,7 @@ client.on(Events.MessageCreate, async message => {
                 components: [categoryMenu]
             });
 
-            respondedTickets.add(message.channel.id);
+            // Do NOT add to respondedTickets so you can test multiple times
             return;
         }
         return;
