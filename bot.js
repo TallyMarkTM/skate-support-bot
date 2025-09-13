@@ -4,6 +4,10 @@ const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js'
 // Track which ticket channels the bot has already responded in
 const respondedTickets = new Set();
 
+// Track active interactions and timeouts
+const activeInteractions = new Map(); // channelId -> { dropdownMessage, timeout, userInteracted }
+const feedbackMessages = new Map(); // messageId -> { originalMessage, user }
+
 // Use environment variable for token in production, fallback to config.json for local development
 let config;
 try {
@@ -42,7 +46,7 @@ function isSupport(message) {
     const roles = getUserRoles(message);
     return roles.some(role => supportRoles.includes(role));
 }
-function sendDropdown(message) {
+function sendDropdown(message, isResend = false) {
     const categoryMenu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('help_category')
@@ -71,10 +75,70 @@ function sendDropdown(message) {
                 { label: 'Game Crashes After Loading', value: 'gamecrashes' }
             ])
     );
+    
+    const content = isResend ? 
+        `👇 ${message.author} Please select the category that matches your issue:` : 
+        '👇 Please select the category that matches your issue:';
+    
     return message.reply({
-        content: '👇 Please select the category that matches your issue:',
+        content: content,
         components: [categoryMenu]
     });
+}
+
+function setupDropdownTimeout(channelId, dropdownMessage, user) {
+    // Clear any existing timeout for this channel
+    const existingInteraction = activeInteractions.get(channelId);
+    if (existingInteraction && existingInteraction.timeout) {
+        clearTimeout(existingInteraction.timeout);
+    }
+    
+    // Set up new timeout
+    const timeout = setTimeout(async () => {
+        const interaction = activeInteractions.get(channelId);
+        if (interaction && !interaction.userInteracted) {
+            try {
+                // Delete the old dropdown message
+                await interaction.dropdownMessage.delete().catch(() => {});
+                
+                // Send new dropdown with @user mention
+                const newDropdown = await sendDropdown(interaction.dropdownMessage, true);
+                
+                // Update the interaction tracking
+                activeInteractions.set(channelId, {
+                    dropdownMessage: newDropdown,
+                    timeout: null,
+                    userInteracted: false
+                });
+                
+                // Set up new timeout
+                setupDropdownTimeout(channelId, newDropdown, user);
+            } catch (error) {
+                console.error('Error handling dropdown timeout:', error);
+            }
+        }
+    }, 20000); // 20 seconds
+    
+    // Store the interaction
+    activeInteractions.set(channelId, {
+        dropdownMessage,
+        timeout,
+        userInteracted: false
+    });
+}
+
+function checkForSupportMention(message) {
+    const content = message.content.toLowerCase();
+    const supportRoles = ['Support', 'Moderator', 'Server Manager'];
+    
+    // Check for @support mention
+    if (content.includes('@support')) {
+        return true;
+    }
+    
+    // Check for support role mentions
+    const userRoles = getUserRoles(message);
+    return userRoles.some(role => supportRoles.includes(role));
 }
 
 // Main message handler
@@ -124,6 +188,19 @@ client.on(Events.MessageCreate, async message => {
     // Only respond in ticket channels or DMs
     if (!isTicketChannel(message.channel) && message.channel.type !== 'DM') return;
 
+    // Check if user mentioned support - if so, stop responding
+    if (checkForSupportMention(message)) {
+        // Clear any active interactions for this channel
+        const existingInteraction = activeInteractions.get(message.channel.id);
+        if (existingInteraction) {
+            if (existingInteraction.timeout) {
+                clearTimeout(existingInteraction.timeout);
+            }
+            activeInteractions.delete(message.channel.id);
+        }
+        return; // Stop responding
+    }
+
     // --- Support: !test command ---
     if (message.content.startsWith('!test ')) {
         if (!isSupport(message)) {
@@ -143,7 +220,8 @@ client.on(Events.MessageCreate, async message => {
         } else {
             await message.reply('❓ No solutions found. Try rephrasing your question or tag @Support for human assistance.');
         }
-        await sendDropdown(message);
+        const dropdownMessage = await sendDropdown(message);
+        setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
         return;
     }
 
@@ -152,7 +230,8 @@ client.on(Events.MessageCreate, async message => {
 
     // --- Only send dropdown once per ticket channel for regular users ---
     if (isTicketChannel(message.channel) && !respondedTickets.has(message.channel.id)) {
-        await sendDropdown(message);
+        const dropdownMessage = await sendDropdown(message);
+        setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
         respondedTickets.add(message.channel.id);
         return;
     }
@@ -161,6 +240,17 @@ client.on(Events.MessageCreate, async message => {
 // Handle interaction create events (for select menus)
 client.on('interactionCreate', async interaction => {
     if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
+        // Mark user as having interacted
+        const channelId = interaction.channel.id;
+        const existingInteraction = activeInteractions.get(channelId);
+        if (existingInteraction) {
+            existingInteraction.userInteracted = true;
+            if (existingInteraction.timeout) {
+                clearTimeout(existingInteraction.timeout);
+                existingInteraction.timeout = null;
+            }
+        }
+
         const selectedCategories = interaction.values;
         const { knowledgeBase } = require('./knowledge-base.js');
         let response = '';
@@ -174,7 +264,25 @@ client.on('interactionCreate', async interaction => {
         if (response.length === 0) {
             response = 'Sorry, no help available for your selections.';
         }
-        await interaction.reply({ content: response, ephemeral: true });
+        
+        // Send the solution
+        const solutionMessage = await interaction.reply({ 
+            content: response, 
+            ephemeral: false 
+        });
+        
+        // Add feedback reactions
+        if (solutionMessage && !solutionMessage.ephemeral) {
+            const message = await interaction.fetchReply();
+            await message.react('✅');
+            await message.react('❌');
+            
+            // Store feedback message info
+            feedbackMessages.set(message.id, {
+                originalMessage: message,
+                user: interaction.user
+            });
+        }
     }
 });
 
@@ -183,10 +291,46 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     if (user.bot) return;
     if (reaction.message.author.id !== client.user.id) return;
     if (!isTicketChannel(reaction.message.channel)) return;
-    if (reaction.emoji.name === '❌') {
-        await reaction.message.channel.send(`❌ This solution didn't help ${user}. @Support, please assist!`);
-    } else if (reaction.emoji.name === '✅') {
-        await reaction.message.channel.send(`✅ Great! Glad that helped ${user}! If you need more help, please tag @Support.`);
+    
+    // Check if this is a feedback message
+    const feedbackData = feedbackMessages.get(reaction.message.id);
+    if (feedbackData && feedbackData.user.id === user.id) {
+        if (reaction.emoji.name === '✅') {
+            // User confirmed the solution was helpful
+            await reaction.message.channel.send(`✅ Great! Glad that helped ${user}! If you need more help, please tag @Support.`);
+            
+            // Clean up feedback tracking
+            feedbackMessages.delete(reaction.message.id);
+            
+            // Clear any active interactions for this channel
+            const existingInteraction = activeInteractions.get(reaction.message.channel.id);
+            if (existingInteraction) {
+                if (existingInteraction.timeout) {
+                    clearTimeout(existingInteraction.timeout);
+                }
+                activeInteractions.delete(reaction.message.channel.id);
+            }
+        } else if (reaction.emoji.name === '❌') {
+            // User said the solution didn't help - send new dropdown
+            try {
+                // Delete the old dropdown message if it exists
+                const existingInteraction = activeInteractions.get(reaction.message.channel.id);
+                if (existingInteraction && existingInteraction.dropdownMessage) {
+                    await existingInteraction.dropdownMessage.delete().catch(() => {});
+                }
+                
+                // Send new dropdown
+                const newDropdown = await sendDropdown(reaction.message, false);
+                setupDropdownTimeout(reaction.message.channel.id, newDropdown, user);
+                
+                await reaction.message.channel.send(`❌ This solution didn't help ${user}. Please try selecting a different category above.`);
+                
+                // Clean up feedback tracking
+                feedbackMessages.delete(reaction.message.id);
+            } catch (error) {
+                console.error('Error handling negative feedback:', error);
+            }
+        }
     }
 });
 
