@@ -51,9 +51,9 @@ function sendDropdown(message, isResend = false) {
     const categoryMenu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('help_category')
-            .setPlaceholder('Select all categories that match your issue...')
+            .setPlaceholder('Select the category that matches your issue...')
             .setMinValues(1)
-            .setMaxValues(5)
+            .setMaxValues(1)
             .addOptions([
                 { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
                 { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
@@ -331,9 +331,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 const categoryMenu = new ActionRowBuilder().addComponents(
                     new StringSelectMenuBuilder()
                         .setCustomId('help_category')
-                        .setPlaceholder('Select all categories that match your issue...')
+                        .setPlaceholder('Select the category that matches your issue...')
                         .setMinValues(1)
-                        .setMaxValues(5)
+                        .setMaxValues(1)
                         .addOptions([
                             { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
                             { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
