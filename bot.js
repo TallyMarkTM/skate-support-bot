@@ -106,6 +106,9 @@ client.on(Events.MessageCreate, async message => {
 
     // Test command for support team to test bot responses (moved up to bypass restrictions)
     if (message.content.startsWith('!test ')) {
+        console.log('!test command triggered by', message.author.username);
+        // ...rest of your code...
+    }
         // Check if user has support permissions
         const supportRoles = ['Support', 'Moderator', 'Server Manager'];
         const userRoles = message.member?.roles.cache.map(role => role.name) || [];
