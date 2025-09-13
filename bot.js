@@ -190,12 +190,7 @@ client.on(Events.MessageCreate, async message => {
             );
 
             await message.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setColor(0xFF0000)
-                        .setTitle('🚨 Select ALL issues that apply and click Submit!')
-                        .setDescription('**Check all that match your problem, then hit Submit below.**')
-                ],
+                content: '🚨 **Select ALL issues that apply and click Submit!**\nCheck all that match your problem, then hit Submit below.',
                 components: [categoryMenu, submitRow]
             });
             return; // Prevents the rest of the !test logic from running
