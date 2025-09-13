@@ -254,8 +254,7 @@ client.on('interactionCreate', async interaction => {
             if (existingInteraction.timeout) {
                 clearTimeout(existingInteraction.timeout);
             }
-            // Completely remove the interaction from tracking
-            activeInteractions.delete(channelId);
+            // Don't remove the interaction yet - we'll do it after processing
         }
         
         // Check if user has selected categories
@@ -300,8 +299,9 @@ client.on('interactionCreate', async interaction => {
             });
         }
         
-        // Clear the selected categories
+        // Clear the selected categories and interaction after processing
         selectedCategories.delete(channelId);
+        activeInteractions.delete(channelId);
         return;
     }
     
