@@ -131,7 +131,7 @@ client.on(Events.MessageCreate, async message => {
                 .setFooter({ text: 'This is a test response - not sent to a real user' })
                 .setTimestamp();
 
-            const reply = await message.reply({ embeds: [embed] });
+            const reply = await message.reply(bestSolution.solution);
             await reply.react('✅');
             await reply.react('❌');
         } else {
