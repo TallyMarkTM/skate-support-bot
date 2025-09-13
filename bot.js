@@ -67,7 +67,7 @@ function sendDropdown(message, isResend = false) {
                 { label: 'Graphics Quality Issues', value: 'quality' },
                 { label: 'Updates and DLC', value: 'updates' },
                 { label: 'File Extraction Issues', value: 'extraction' },
-                { label: 'Game Performance Issues', value: 'gameperformance' },
+                { label: 'Game Performance Issues (RPCS3 Only)', value: 'gameperformance' },
                 { label: 'Physics and Clipping Issues', value: 'physics' },
                 { label: 'Display Issues', value: 'display' },
                 { label: 'RPCS3 Software Detection', value: 'software' },
@@ -96,7 +96,8 @@ function setupDropdownTimeout(channelId, dropdownMessage, user) {
     // Set up new timeout
     const timeout = setTimeout(async () => {
         const interaction = activeInteractions.get(channelId);
-        if (interaction && !interaction.userInteracted) {
+        // Double-check that user hasn't interacted and the interaction still exists
+        if (interaction && !interaction.userInteracted && interaction.timeout === timeout) {
             try {
                 // Delete the old dropdown message
                 await interaction.dropdownMessage.delete().catch(() => {});
@@ -244,11 +245,15 @@ client.on('interactionCreate', async interaction => {
         const channelId = interaction.channel.id;
         const existingInteraction = activeInteractions.get(channelId);
         if (existingInteraction) {
-            existingInteraction.userInteracted = true;
             if (existingInteraction.timeout) {
                 clearTimeout(existingInteraction.timeout);
-                existingInteraction.timeout = null;
             }
+            // Update the interaction tracking to mark as interacted and clear timeout
+            activeInteractions.set(channelId, {
+                dropdownMessage: existingInteraction.dropdownMessage,
+                timeout: null,
+                userInteracted: true
+            });
         }
 
         const selectedCategories = interaction.values;
@@ -347,7 +352,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                                 { label: 'Graphics Quality Issues', value: 'quality' },
                                 { label: 'Updates and DLC', value: 'updates' },
                                 { label: 'File Extraction Issues', value: 'extraction' },
-                                { label: 'Game Performance Issues', value: 'gameperformance' },
+                                { label: 'Game Performance Issues (RPCS3 Only)', value: 'gameperformance' },
                                 { label: 'Physics and Clipping Issues', value: 'physics' },
                                 { label: 'Display Issues', value: 'display' },
                                 { label: 'RPCS3 Software Detection', value: 'software' },

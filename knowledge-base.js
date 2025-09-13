@@ -103,7 +103,7 @@ const knowledgeBase = {
         solutions: [
             {
                 issue: "High FPS mod causing render/clipping issues",
-                solution: "The high FPS mod reduces render distance which causes clipping in buildings and terrain. You can use SmokeyFE's enhanced native menu that includes render distance options to compensate for this.",
+                solution: "The high FPS mod reduces render distance which causes clipping in buildings and terrain. You can use SmokeyFE's enhanced native menu that includes render distance options to compensate for this.\n\n**Download Smokey's Comp Menu:** https://drive.google.com/file/d/1ZkIkJ-1uHfpLC8ZmgYFysRsFKVynwuUW/view?usp=sharing",
                 confidence: 0.9
             }
         ]
@@ -181,13 +181,13 @@ const knowledgeBase = {
         ]
     },
 
-    // Game Performance Issues
+    // Game Performance Issues (RPCS3 Only)
     gameperformance: {
         keywords: ['slow motion', 'slow motin', 'slowmotion', 'game slow', 'game slo', 'game is slow', 'game is slo', 'slowmo', 'slow mo', 'slo mo', 'running slow', 'runing slow', 'laggy', 'lagy', 'lag', 'choppy', 'chopy', 'low fps', 'low fp', 'bad fps'],
         solutions: [
             {
-                issue: "Game is in slow motion",
-                solution: "To fix slow motion gameplay:\n\n1. **Close the game**\n2. **Right-click the game** on the game list\n3. **Click \"Create or change custom configuration\"** from default settings\n4. **Go to the CPU tab**\n5. **Enable SPU loop detection**\n6. **Click Save**\n7. **Boot the game**\n\nThis should resolve the slow motion issue.",
+                issue: "Game is in slow motion (RPCS3 Only)",
+                solution: "**Note: This fix is only for RPCS3 users.**\n\nTo fix slow motion gameplay:\n\n1. **Close the game**\n2. **Right-click the game** on the game list\n3. **Click \"Create or change custom configuration\"** from default settings\n4. **Go to the CPU tab**\n5. **Enable SPU loop detection**\n6. **Click Save**\n7. **Boot the game**\n\nThis should resolve the slow motion issue.",
                 confidence: 0.95
             }
         ]
