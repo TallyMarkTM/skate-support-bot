@@ -150,6 +150,42 @@ client.on(Events.MessageCreate, async message => {
             await reply.react('✅');
             await reply.react('❌');
         }
+
+        // Only show dropdown in ticket-6181
+        if (message.channel.name === 'ticket-6181') {
+            const categoryMenu = new ActionRowBuilder().addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('help_category')
+                    .setPlaceholder('Select your issue category...')
+                    .addOptions([
+                        { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
+                        { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
+                        { label: 'Graphics/Savefile Issues', value: 'graphics' },
+                        { label: 'Black Screen Issues', value: 'blackscreen' },
+                        { label: 'Native Menu Issues', value: 'nativemenu' },
+                        { label: 'Mod Installation Issues', value: 'mods' },
+                        { label: 'High FPS and Render Issues', value: 'performance' },
+                        { label: 'General Help', value: 'general' },
+                        { label: "CFSS (Coach Frank's Skate Shop) Issues", value: 'cfss' },
+                        { label: 'Maps and Mods', value: 'maps' },
+                        { label: 'Graphics Quality Issues', value: 'quality' },
+                        { label: 'Updates and DLC', value: 'updates' },
+                        { label: 'File Extraction Issues', value: 'extraction' },
+                        { label: 'Game Performance Issues', value: 'gameperformance' },
+                        { label: 'Physics and Clipping Issues', value: 'physics' },
+                        { label: 'Display Issues', value: 'display' },
+                        { label: 'RPCS3 Software Detection', value: 'software' },
+                        { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
+                        { label: 'Game Crashes After Loading', value: 'gamecrashes' }
+                    ])
+            );
+
+            await message.reply({
+                content: 'Support Test: What do you need help with?',
+                components: [categoryMenu]
+            });
+            return; // Prevents the rest of the !test logic from running
+        }
         return;
     }
 
