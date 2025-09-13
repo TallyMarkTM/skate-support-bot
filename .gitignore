@@ -94,3 +94,15 @@ temp/
 
 # Config file with sensitive information
 config.json
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
+.vs/skate-support-bot/v17/.wsuo
+.vs/skate-support-bot/FileContentIndex/f13ffff6-918a-461f-9617-a24a932cde73.vsidx
+.vs/skate-support-bot/FileContentIndex/5a45574e-fd0a-4ee5-b01b-f53a64cf3c55.vsidx
+.vs/skate-support-bot/CopilotIndices/17.14.1147.5054/SemanticSymbols.db-wal
+.vs/skate-support-bot/CopilotIndices/17.14.1147.5054/SemanticSymbols.db-shm
+.vs/skate-support-bot/CopilotIndices/17.14.1147.5054/SemanticSymbols.db
+.vs/skate-support-bot/CopilotIndices/17.14.1147.5054/CodeChunks.db-wal
+.vs/skate-support-bot/CopilotIndices/17.14.1147.5054/CodeChunks.db-shm
+.vs/skate-support-bot/CopilotIndices/17.14.1147.5054/CodeChunks.db
+.vs/skate-support-bot/copilot-chat/35947b43/sessions/40317d22-3a95-4059-b7c8-5852b53fc396
