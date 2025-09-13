@@ -317,11 +317,16 @@ client.on('interactionCreate', async interaction => {
 
 // Handle reaction events
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    console.log('Reaction added:', reaction.emoji.name, 'by', user.username, 'on message', reaction.message.id);
+    
     if (user.bot) return;
     if (reaction.message.author.id !== client.user.id) return;
     
+    console.log('Reaction is on bot message, checking feedback data');
+    
     // Check if this is a feedback message
     const feedbackData = feedbackMessages.get(reaction.message.id);
+    console.log('Feedback data:', feedbackData);
     if (feedbackData && feedbackData.user.id === user.id) {
         if (reaction.emoji.name === '✅') {
             // User confirmed the solution was helpful
