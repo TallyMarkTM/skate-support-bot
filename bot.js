@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Events, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js');
 
 // Track which ticket channels the bot has already responded in
@@ -363,6 +363,79 @@ client.on(Events.MessageCreate, async message => {
             .setTimestamp();
 
         message.reply({ embeds: [helpEmbed] });
+    }
+
+    // Menu command for ticket-6181
+    if (message.content === '!menu') {
+        // Only allow in ticket-6181
+        if (message.channel.name !== 'ticket-6181') return;
+
+        const categoryMenu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('help_category')
+                .setPlaceholder('Select your issue category...')
+                .addOptions([
+                    { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
+                    { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
+                    { label: 'Graphics/Savefile Issues', value: 'graphics' },
+                    { label: 'Black Screen Issues', value: 'blackscreen' },
+                    { label: 'Native Menu Issues', value: 'nativemenu' },
+                    { label: 'Mod Installation Issues', value: 'mods' },
+                    { label: 'High FPS and Render Issues', value: 'performance' },
+                    { label: 'General Help', value: 'general' },
+                    { label: "CFSS (Coach Frank's Skate Shop) Issues", value: 'cfss' },
+                    { label: 'Maps and Mods', value: 'maps' },
+                    { label: 'Graphics Quality Issues', value: 'quality' },
+                    { label: 'Updates and DLC', value: 'updates' },
+                    { label: 'File Extraction Issues', value: 'extraction' },
+                    { label: 'Game Performance Issues', value: 'gameperformance' },
+                    { label: 'Physics and Clipping Issues', value: 'physics' },
+                    { label: 'Display Issues', value: 'display' },
+                    { label: 'RPCS3 Software Detection', value: 'software' },
+                    { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
+                    { label: 'Game Crashes After Loading', value: 'gamecrashes' }
+                ])
+        );
+
+        await message.reply({
+            content: 'What do you need help with?',
+            components: [categoryMenu]
+        });
+    }
+});
+
+// Handle interaction create events (for select menus)
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isStringSelectMenu()) return;
+    if (interaction.customId === 'help_category') {
+        // Only allow in ticket-6181
+        if (interaction.channel.name !== 'ticket-6181') {
+            await interaction.reply({ content: 'This menu only works in ticket-6181.', ephemeral: true });
+            return;
+        }
+
+        const selectedCategory = interaction.values[0];
+        const { knowledgeBase } = require('./knowledge-base.js');
+        const categoryData = knowledgeBase[selectedCategory];
+
+        if (!categoryData) {
+            await interaction.reply({ content: 'Sorry, no help available for that category.', ephemeral: true });
+            return;
+        }
+
+        // Get the highest confidence solution for the category
+        const bestSolution = categoryData.solutions.reduce((a, b) => a.confidence > b.confidence ? a : b);
+
+        await interaction.reply({
+            embeds: [
+                {
+                    title: `Solution for ${interaction.component.options.find(opt => opt.value === selectedCategory).label}`,
+                    description: bestSolution.solution,
+                    color: 0x00FF00
+                }
+            ],
+            ephemeral: true
+        });
     }
 });
 
