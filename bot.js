@@ -277,12 +277,10 @@ client.on(Events.MessageCreate, async message => {
                 })
                 .setTimestamp();
 
-            await message.reply({ embeds: [embed] });
-            
-            // Add helpful reactions
-            await message.react('✅'); // Mark as helpful
-            await message.react('❌'); // Mark as not helpful
-            
+            const reply = await message.reply({ embeds: [embed] });
+            await reply.react('✅');
+            await reply.react('❌');
+
             // Send follow-up message after a short delay
             setTimeout(async () => {
                 try {
