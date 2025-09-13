@@ -181,7 +181,12 @@ client.on(Events.MessageCreate, async message => {
             );
 
             await message.reply({
-                content: 'Support Test: What do you need help with?',
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor(0xFF0000) // Bright red for attention
+                        .setTitle('🚨 Please Select Your Issue Category Below!')
+                        .setDescription('**To get the fastest help, choose the category that matches your problem.**\n\n⬇️ **Pick an option from the dropdown below!** ⬇️')
+                ],
                 components: [categoryMenu]
             });
             return; // Prevents the rest of the !test logic from running
