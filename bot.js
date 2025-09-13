@@ -131,7 +131,9 @@ client.on(Events.MessageCreate, async message => {
                 .setFooter({ text: 'This is a test response - not sent to a real user' })
                 .setTimestamp();
 
-            await message.reply({ embeds: [embed] });
+            const reply = await message.reply({ embeds: [embed] });
+            await reply.react('✅');
+            await reply.react('❌');
         } else {
             const embed = new EmbedBuilder()
                 .setColor(0xFF0000)
@@ -144,7 +146,9 @@ client.on(Events.MessageCreate, async message => {
                 })
                 .setFooter({ text: 'Consider adding this to the knowledge base if it\'s a common question' });
 
-            await message.reply({ embeds: [embed] });
+            const reply = await message.reply({ embeds: [embed] });
+            await reply.react('✅');
+            await reply.react('❌');
         }
         return;
     }
