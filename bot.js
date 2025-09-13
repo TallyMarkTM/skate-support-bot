@@ -301,65 +301,51 @@ client.on(Events.MessageCreate, async message => {
         content.includes('error') || message.mentions.has(client.user) || message.content.startsWith('!support') ||
         isTicketChannel; // Always try to help in ticket channels
 
-    if (shouldRespond) {
-        
-        // Try to find the best solution
-        const bestSolution = findBestSolution(message.content);
-        
-        // Lower confidence threshold for ticket channels to be more helpful
-        const confidenceThreshold = isTicketChannel ? 0.3 : 0.5;
-        
-        if (bestSolution && bestSolution.confidence > confidenceThreshold) {
-            // Add a small delay in ticket channels to feel more natural
-            if (isTicketChannel) {
-                await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
-            }
+    if (isTicketChannel) {
+        // Only respond to regular users (not support team)
+        const supportRoles = ['Support', 'Moderator', 'Server Manager'];
+        const userRoles = message.member?.roles.cache.map(role => role.name) || [];
+        const messageAuthorIsSupport = userRoles.some(roleName => supportRoles.includes(roleName));
+        if (messageAuthorIsSupport) return;
 
-            const embed = new EmbedBuilder()
-                .setColor(0x00FF00)
-                .setTitle('💡 Coach Frank Says')
-                .setDescription(bestSolution.solution)
-                .setFooter({ 
-                    text: isTicketChannel ? 
-                        `If this doesn't solve it, tag @Support for human help!` :
-                        `If this doesn't help, please provide more details!`
-                })
-                .setTimestamp();
+        // Only send dropdown if we haven't already responded in this ticket
+        if (respondedTickets.has(message.channel.id)) return;
 
-            const reply = await message.reply({ embeds: [embed] });
-            await reply.react('✅');
-            await reply.react('❌');
+        const categoryMenu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('help_category')
+                .setPlaceholder('Select all categories that match your issue...')
+                .setMinValues(1)
+                .setMaxValues(5)
+                .addOptions([
+                    { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
+                    { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
+                    { label: 'Graphics/Savefile Issues', value: 'graphics' },
+                    { label: 'Black Screen Issues', value: 'blackscreen' },
+                    { label: 'Native Menu Issues', value: 'nativemenu' },
+                    { label: 'Mod Installation Issues', value: 'mods' },
+                    { label: 'High FPS and Render Issues', value: 'performance' },
+                    { label: 'General Help', value: 'general' },
+                    { label: "CFSS (Coach Frank's Skate Shop) Issues", value: 'cfss' },
+                    { label: 'Maps and Mods', value: 'maps' },
+                    { label: 'Graphics Quality Issues', value: 'quality' },
+                    { label: 'Updates and DLC', value: 'updates' },
+                    { label: 'File Extraction Issues', value: 'extraction' },
+                    { label: 'Game Performance Issues', value: 'gameperformance' },
+                    { label: 'Physics and Clipping Issues', value: 'physics' },
+                    { label: 'Display Issues', value: 'display' },
+                    { label: 'RPCS3 Software Detection', value: 'software' },
+                    { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
+                    { label: 'Game Crashes After Loading', value: 'gamecrashes' }
+                ])
+        );
 
-            // Send follow-up message after a short delay
-            setTimeout(async () => {
-                try {
-                    await message.channel.send("If this solution doesn't help, please ping @Support for human assistance! 🙋‍♂️");
-                } catch (error) {
-                    console.error('Error sending follow-up message:', error);
-                }
-            }, 3000); // 3 second delay
-            
-            // Mark this ticket as responded to
-            if (isTicketChannel) {
-                respondedTickets.add(message.channel.id);
-            }
-            
-        } else {
-            // Provide general help if no specific solution found - only in ticket channels
-            if (isTicketChannel) {
-                const embed = new EmbedBuilder()
-                    .setColor(0x3498db)
-                    .setDescription('👋 Hey! I noticed you might need help. Check out these resources while you wait for support:\n\n<#807348308451655730> - **Beginners Guide** for setup help\n<#998366877233463386> - **FAQ** for common questions and latest fixes\n\nTag @Support if you need human assistance!')
-                    .setTimestamp();
+        await message.reply({
+            content: '👇 Please select the category that matches your issue:',
+            components: [categoryMenu]
+        });
 
-                await message.reply({ embeds: [embed] });
-                
-                // Mark this ticket as responded to
-                if (isTicketChannel) {
-                    respondedTickets.add(message.channel.id);
-                }
-            }
-        }
+        respondedTickets.add(message.channel.id);
         return;
     }
 
