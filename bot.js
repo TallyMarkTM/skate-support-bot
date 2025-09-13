@@ -319,7 +319,6 @@ client.on('interactionCreate', async interaction => {
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
     if (user.bot) return;
     if (reaction.message.author.id !== client.user.id) return;
-    if (!isTicketChannel(reaction.message.channel)) return;
     
     // Check if this is a feedback message
     const feedbackData = feedbackMessages.get(reaction.message.id);
