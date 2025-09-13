@@ -99,21 +99,15 @@ function setupDropdownTimeout(channelId, dropdownMessage, user) {
         // Double-check that user hasn't interacted and the interaction still exists
         if (interaction && !interaction.userInteracted && interaction.timeout === timeout) {
             try {
-                // Delete the old dropdown message
-                await interaction.dropdownMessage.delete().catch(() => {});
+                // Send a reminder message with @user mention
+                await interaction.dropdownMessage.channel.send(`👆 ${user} Please interact with the dropdown menu above to get help with your issue.`);
                 
-                // Send new dropdown with @user mention
-                const newDropdown = await sendDropdown(interaction.dropdownMessage, true);
-                
-                // Update the interaction tracking
+                // Clear the timeout since we've sent the reminder
                 activeInteractions.set(channelId, {
-                    dropdownMessage: newDropdown,
+                    dropdownMessage: interaction.dropdownMessage,
                     timeout: null,
                     userInteracted: false
                 });
-                
-                // Set up new timeout
-                setupDropdownTimeout(channelId, newDropdown, user);
             } catch (error) {
                 console.error('Error handling dropdown timeout:', error);
             }
@@ -241,19 +235,15 @@ client.on(Events.MessageCreate, async message => {
 // Handle interaction create events (for select menus)
 client.on('interactionCreate', async interaction => {
     if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
-        // Mark user as having interacted
+        // Mark user as having interacted and completely clear the interaction
         const channelId = interaction.channel.id;
         const existingInteraction = activeInteractions.get(channelId);
         if (existingInteraction) {
             if (existingInteraction.timeout) {
                 clearTimeout(existingInteraction.timeout);
             }
-            // Update the interaction tracking to mark as interacted and clear timeout
-            activeInteractions.set(channelId, {
-                dropdownMessage: existingInteraction.dropdownMessage,
-                timeout: null,
-                userInteracted: true
-            });
+            // Completely remove the interaction from tracking to prevent any timeout issues
+            activeInteractions.delete(channelId);
         }
 
         const selectedCategories = interaction.values;
