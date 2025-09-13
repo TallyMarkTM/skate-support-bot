@@ -299,9 +299,8 @@ client.on('interactionCreate', async interaction => {
             });
         }
         
-        // Clear the selected categories and interaction after processing
+        // Clear the selected categories after processing (keep interaction for feedback)
         selectedCategories.delete(channelId);
-        activeInteractions.delete(channelId);
         return;
     }
     
@@ -309,6 +308,17 @@ client.on('interactionCreate', async interaction => {
         // Store the selected categories for this channel
         const channelId = interaction.channel.id;
         selectedCategories.set(channelId, interaction.values);
+        
+        // Clear any existing timeout since user has interacted
+        const existingInteraction = activeInteractions.get(channelId);
+        if (existingInteraction && existingInteraction.timeout) {
+            clearTimeout(existingInteraction.timeout);
+            activeInteractions.set(channelId, {
+                dropdownMessage: existingInteraction.dropdownMessage,
+                timeout: null,
+                userInteracted: true
+            });
+        }
         
         // Acknowledge the selection (ephemeral so only user sees it)
         await interaction.reply({ 
@@ -409,8 +419,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 // Clean up feedback tracking
                 feedbackMessages.delete(reaction.message.id);
                 
-                // Clear selected categories
+                // Clear selected categories and active interactions
                 selectedCategories.delete(reaction.message.channel.id);
+                activeInteractions.delete(reaction.message.channel.id);
             } catch (error) {
                 console.error('Error handling negative feedback:', error);
             }
