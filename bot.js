@@ -149,7 +149,7 @@ client.on(Events.MessageCreate, async message => {
         // Send dropdown for testing
         const dropdownMessage = await sendDropdown(message);
         setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
-        return message.reply('🧪 **Dropdown Test** - Testing dropdown without any restrictions!');
+        return;
     }
     if (message.content === '!serverinfo') {
         const guild = message.guild;
