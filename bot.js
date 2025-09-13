@@ -346,8 +346,12 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 
                 // Delete the old dropdown message if it exists
                 const existingInteraction = activeInteractions.get(channel.id);
+                console.log('Negative feedback - existingInteraction:', existingInteraction);
                 if (existingInteraction && existingInteraction.dropdownMessage) {
+                    console.log('Deleting old dropdown message');
                     await existingInteraction.dropdownMessage.delete().catch(() => {});
+                } else {
+                    console.log('No existing interaction or dropdown message found');
                 }
                 
                 // Delete the solution message that got the ❌ reaction
