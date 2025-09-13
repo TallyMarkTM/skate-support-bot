@@ -145,6 +145,13 @@ client.on(Events.MessageCreate, async message => {
     // Basic commands
     if (message.content === '!ping') return message.reply('Pong! 🏓');
     if (message.content === '!hello') return message.reply(`Hello ${message.author.username}! 👋 Welcome to the Skate 3 modding community!`);
+    if (message.content === '!debug') {
+        const roles = getUserRoles(message);
+        const isSupportUser = isSupport(message);
+        const channelType = message.channel.type;
+        const channelName = message.channel.name;
+        return message.reply(`🔍 **Debug Info:**\n**User:** ${message.author.username}\n**Roles:** ${roles.join(', ') || 'None'}\n**Is Support:** ${isSupportUser}\n**Channel:** ${channelName} (${channelType})\n**Bot is working!**`);
+    }
     if (message.content === '!serverinfo') {
         const guild = message.guild;
         const embed = new EmbedBuilder()
@@ -225,10 +232,16 @@ client.on(Events.MessageCreate, async message => {
 
     // --- Support: !testbot command ---
     if (message.content === '!testbot') {
+        console.log('Testbot command received from:', message.author.username);
+        console.log('User roles:', getUserRoles(message));
+        console.log('Is support:', isSupport(message));
+        
         if (!isSupport(message)) {
+            console.log('User is not support, denying access');
             return message.reply('❌ Only support team members can use the testbot command.');
         }
 
+        console.log('User is support, sending dropdown');
         // Send dropdown for testing (works in any channel)
         const dropdownMessage = await sendDropdown(message);
         setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
