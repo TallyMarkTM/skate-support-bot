@@ -359,37 +359,47 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 // Delete the solution message that got the ❌ reaction
                 await reaction.message.delete().catch(() => {});
                 
-                // Send new dropdown using the channel directly
+                // Send new dropdown with confirm button using the channel directly
+                const categoryMenu = new ActionRowBuilder().addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId('help_category')
+                        .setPlaceholder('Select all categories that match your issue...')
+                        .setMinValues(1)
+                        .setMaxValues(5)
+                        .addOptions([
+                            { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
+                            { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
+                            { label: 'Graphics/Savefile Issues', value: 'graphics' },
+                            { label: 'Black Screen Issues', value: 'blackscreen' },
+                            { label: 'Native Menu Issues', value: 'nativemenu' },
+                            { label: 'Mod Installation Issues', value: 'mods' },
+                            { label: 'High FPS and Render Issues', value: 'performance' },
+                            { label: 'General Help', value: 'general' },
+                            { label: "CFSS/CUSTOM TEXTURES", value: 'cfss' },
+                            { label: 'Skate 2 Maps New San Van', value: 'maps' },
+                            { label: 'Graphics Quality Issues', value: 'quality' },
+                            { label: 'Updates and DLC', value: 'updates' },
+                            { label: 'File Extraction Issues', value: 'extraction' },
+                            { label: 'Game Performance Issues (RPCS3 Only)', value: 'gameperformance' },
+                            { label: 'Physics and Clipping Issues', value: 'physics' },
+                            { label: 'Display Issues', value: 'display' },
+                            { label: 'RPCS3 Software Detection', value: 'software' },
+                            { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
+                            { label: 'Game Crashes After Loading', value: 'gamecrashes' }
+                        ])
+                );
+                
+                const confirmButton = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('confirm_selection')
+                        .setLabel('Confirm Selection')
+                        .setStyle(ButtonStyle.Primary)
+                        .setEmoji('✅')
+                );
+                
                 const newDropdown = await channel.send({
                     content: '👇 Please select the category that matches your issue:',
-                    components: [new ActionRowBuilder().addComponents(
-                        new StringSelectMenuBuilder()
-                            .setCustomId('help_category')
-                            .setPlaceholder('Select all categories that match your issue...')
-                            .setMinValues(1)
-                            .setMaxValues(5)
-                            .addOptions([
-                                { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
-                                { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
-                                { label: 'Graphics/Savefile Issues', value: 'graphics' },
-                                { label: 'Black Screen Issues', value: 'blackscreen' },
-                                { label: 'Native Menu Issues', value: 'nativemenu' },
-                                { label: 'Mod Installation Issues', value: 'mods' },
-                                { label: 'High FPS and Render Issues', value: 'performance' },
-                                { label: 'General Help', value: 'general' },
-                                { label: "CFSS/CUSTOM TEXTURES", value: 'cfss' },
-                                { label: 'Skate 2 Maps New San Van', value: 'maps' },
-                                { label: 'Graphics Quality Issues', value: 'quality' },
-                                { label: 'Updates and DLC', value: 'updates' },
-                                { label: 'File Extraction Issues', value: 'extraction' },
-                                { label: 'Game Performance Issues (RPCS3 Only)', value: 'gameperformance' },
-                                { label: 'Physics and Clipping Issues', value: 'physics' },
-                                { label: 'Display Issues', value: 'display' },
-                                { label: 'RPCS3 Software Detection', value: 'software' },
-                                { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
-                                { label: 'Game Crashes After Loading', value: 'gamecrashes' }
-                            ])
-                    )]
+                    components: [categoryMenu, confirmButton]
                 });
                 
                 setupDropdownTimeout(channel.id, newDropdown, user);
