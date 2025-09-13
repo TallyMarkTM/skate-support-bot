@@ -313,8 +313,10 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
         } else if (reaction.emoji.name === '❌') {
             // User said the solution didn't help - send new dropdown
             try {
+                const channel = reaction.message.channel;
+                
                 // Delete the old dropdown message if it exists
-                const existingInteraction = activeInteractions.get(reaction.message.channel.id);
+                const existingInteraction = activeInteractions.get(channel.id);
                 if (existingInteraction && existingInteraction.dropdownMessage) {
                     await existingInteraction.dropdownMessage.delete().catch(() => {});
                 }
@@ -322,11 +324,42 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 // Delete the solution message that got the ❌ reaction
                 await reaction.message.delete().catch(() => {});
                 
-                // Send new dropdown
-                const newDropdown = await sendDropdown(reaction.message, false);
-                setupDropdownTimeout(reaction.message.channel.id, newDropdown, user);
+                // Send new dropdown using the channel directly
+                const newDropdown = await channel.send({
+                    content: '👇 Please select the category that matches your issue:',
+                    components: [new ActionRowBuilder().addComponents(
+                        new StringSelectMenuBuilder()
+                            .setCustomId('help_category')
+                            .setPlaceholder('Select all categories that match your issue...')
+                            .setMinValues(1)
+                            .setMaxValues(5)
+                            .addOptions([
+                                { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
+                                { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
+                                { label: 'Graphics/Savefile Issues', value: 'graphics' },
+                                { label: 'Black Screen Issues', value: 'blackscreen' },
+                                { label: 'Native Menu Issues', value: 'nativemenu' },
+                                { label: 'Mod Installation Issues', value: 'mods' },
+                                { label: 'High FPS and Render Issues', value: 'performance' },
+                                { label: 'General Help', value: 'general' },
+                                { label: "CFSS/CUSTOM TEXTURES", value: 'cfss' },
+                                { label: 'Skate 2 Maps New San Van', value: 'maps' },
+                                { label: 'Graphics Quality Issues', value: 'quality' },
+                                { label: 'Updates and DLC', value: 'updates' },
+                                { label: 'File Extraction Issues', value: 'extraction' },
+                                { label: 'Game Performance Issues', value: 'gameperformance' },
+                                { label: 'Physics and Clipping Issues', value: 'physics' },
+                                { label: 'Display Issues', value: 'display' },
+                                { label: 'RPCS3 Software Detection', value: 'software' },
+                                { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
+                                { label: 'Game Crashes After Loading', value: 'gamecrashes' }
+                            ])
+                    )]
+                });
                 
-                await reaction.message.channel.send(`❌ This solution didn't help ${user}. Please try selecting a different category above.`);
+                setupDropdownTimeout(channel.id, newDropdown, user);
+                
+                await channel.send(`❌ This solution didn't help ${user}. Please try selecting a different category above.`);
                 
                 // Clean up feedback tracking
                 feedbackMessages.delete(reaction.message.id);
