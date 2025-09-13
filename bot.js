@@ -167,6 +167,7 @@ client.on(Events.MessageCreate, async message => {
                 { name: '🔧 Automatic Support', value: 'Just describe your issue and I\'ll try to help! Keywords like "rpcs3", "graphics", "mods", etc. trigger automatic responses.', inline: false },
                 { name: '!ask [question]', value: 'Search for specific solutions (e.g., `!ask rpcs3 black screen`)', inline: false },
                 { name: '!test [question]', value: '🧪 **Support Only** - Test bot responses with detailed info (e.g., `!test catastrophic failure`)', inline: false },
+                { name: '!testbot', value: '🧪 **Support Only** - Activate testing mode to test dropdown interactions', inline: false },
                 { name: '!support', value: 'Force trigger the support system', inline: false },
                 { name: '!ping', value: 'Test if the bot is working', inline: false },
                 { name: '!hello', value: 'Get a friendly greeting', inline: false },
@@ -222,8 +223,40 @@ client.on(Events.MessageCreate, async message => {
         return;
     }
 
-    // --- Ignore support team messages in ticket channels (except !test) ---
-    if (isTicketChannel(message.channel) && isSupport(message)) return;
+    // --- Support: !testbot command ---
+    if (message.content === '!testbot') {
+        if (!isSupport(message)) {
+            return message.reply('❌ Only support team members can use the testbot command.');
+        }
+        if (!isTicketChannel(message.channel)) return;
+
+        // Send dropdown for testing
+        const dropdownMessage = await sendDropdown(message);
+        setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
+        await message.reply('🧪 **Testing Mode Activated** - You can now test the bot dropdown in this ticket!');
+        return;
+    }
+
+    // --- Allow support team to test in their own tickets ---
+    if (isTicketChannel(message.channel) && isSupport(message)) {
+        // Check if this is a support member's own ticket (for testing)
+        // Method 1: Check if channel topic contains the user's ID
+        const channelTopic = message.channel.topic || '';
+        const isOwnTicket = channelTopic.includes(message.author.id);
+        
+        // Method 2: Check if channel name contains the user's ID (fallback)
+        const channelName = message.channel.name || '';
+        const isOwnTicketByName = channelName.includes(message.author.id);
+        
+        if (isOwnTicket || isOwnTicketByName) {
+            // This is a support member's own ticket - allow them to test
+            const dropdownMessage = await sendDropdown(message);
+            setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
+            return;
+        }
+        // Otherwise ignore support team messages in other tickets
+        return;
+    }
 
     // --- Only send dropdown once per ticket channel for regular users ---
     if (isTicketChannel(message.channel) && !respondedTickets.has(message.channel.id)) {
