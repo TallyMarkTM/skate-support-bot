@@ -281,26 +281,6 @@ client.on(Events.MessageCreate, async message => {
         }
     }
 
-    // AI-Powered Support System - Only works in ticket channels now
-    const shouldRespond = 
-        content.includes('help') || content.includes('issue') || content.includes('problem') || 
-        content.includes('rpcs3') || content.includes('mod') || content.includes('graphics') ||
-        content.includes('black screen') || content.includes('crash') || content.includes('fps') ||
-        content.includes('savefile') || content.includes('save file') || content.includes('skate.p') || 
-        content.includes('gamesave') || content.includes('savedata') || content.includes('rpcn') || content.includes('setup') ||
-        content.includes('download') || content.includes('install') || content.includes('update') ||
-        content.includes('freeze') || content.includes('loading') || content.includes('won\'t') ||
-        content.includes('wont') || content.includes('can\'t') || content.includes('cant') ||
-        content.includes('doesn\'t') || content.includes('doesnt') || content.includes('not working') ||
-        content.includes('native menu') || content.includes('native') || content.includes('menu') ||
-        content.includes('cfss') || content.includes('skate shop') || content.includes('coach frank') ||
-        content.includes('textures') || content.includes('texture') ||
-        content.includes('maps') || content.includes('skate 2') || content.includes('san van') ||
-        content.includes('blurry') || content.includes('looks bad') || content.includes('bad quality') || content.includes('resolution') ||
-        content.includes('xenia') || content.includes('xbox') || content.includes('dlc') ||
-        content.includes('error') || message.mentions.has(client.user) || message.content.startsWith('!support') ||
-        isTicketChannel; // Always try to help in ticket channels
-
     if (isTicketChannel) {
         // Only respond to regular users (not support team)
         const supportRoles = ['Support', 'Moderator', 'Server Manager'];
