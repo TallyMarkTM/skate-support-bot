@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js');
 
 // Track which ticket channels the bot has already responded in
@@ -7,7 +7,6 @@ const respondedTickets = new Set();
 // Track active interactions and timeouts
 const activeInteractions = new Map(); // channelId -> { dropdownMessage, timeout, userInteracted }
 const feedbackMessages = new Map(); // messageId -> { originalMessage, user }
-const selectedCategories = new Map(); // channelId -> selectedValues
 
 // Use environment variable for token in production, fallback to config.json for local development
 let config;
@@ -78,21 +77,13 @@ function sendDropdown(message, isResend = false) {
             ])
     );
     
-    const confirmButton = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId('confirm_selection')
-            .setLabel('Confirm Selection')
-            .setStyle(ButtonStyle.Primary)
-            .setEmoji('✅')
-    );
-    
     const content = isResend ? 
         `👇 ${message.author} Please select the category that matches your issue:` : 
         '👇 Please select the category that matches your issue:';
     
     return message.reply({
         content: content,
-        components: [categoryMenu, confirmButton]
+        components: [categoryMenu]
     });
 }
 
@@ -244,32 +235,25 @@ client.on(Events.MessageCreate, async message => {
 
 // Handle interaction create events (for select menus and buttons)
 client.on('interactionCreate', async interaction => {
-    if (interaction.isButton() && interaction.customId === 'confirm_selection') {
-        // Handle confirm button click
+    
+    if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
+        // Clear any existing timeout since user has interacted
         const channelId = interaction.channel.id;
         const existingInteraction = activeInteractions.get(channelId);
-        const userSelections = selectedCategories.get(channelId);
-        
-        if (existingInteraction) {
-            if (existingInteraction.timeout) {
-                clearTimeout(existingInteraction.timeout);
-            }
-            // Don't remove the interaction yet - we'll do it after processing
-        }
-        
-        // Check if user has selected categories
-        if (!userSelections || userSelections.length === 0) {
-            await interaction.reply({ 
-                content: 'Please select one or more categories from the dropdown menu above first, then click "Confirm Selection" again.', 
-                ephemeral: true 
+        if (existingInteraction && existingInteraction.timeout) {
+            clearTimeout(existingInteraction.timeout);
+            activeInteractions.set(channelId, {
+                dropdownMessage: existingInteraction.dropdownMessage,
+                timeout: null,
+                userInteracted: true
             });
-            return;
         }
         
-        // Process the selected categories
+        // Process the selected categories immediately
+        const selectedCategories = interaction.values;
         const { knowledgeBase } = require('./knowledge-base.js');
         let response = '';
-        for (const category of userSelections) {
+        for (const category of selectedCategories) {
             const categoryData = knowledgeBase[category];
             if (categoryData && categoryData.solutions && categoryData.solutions.length > 0) {
                 const bestSolution = categoryData.solutions.reduce((a, b) => a.confidence > b.confidence ? a : b);
@@ -299,32 +283,8 @@ client.on('interactionCreate', async interaction => {
             });
         }
         
-        // Clear the selected categories after processing (keep interaction for feedback)
-        selectedCategories.delete(channelId);
-        return;
-    }
-    
-    if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
-        // Store the selected categories for this channel
-        const channelId = interaction.channel.id;
-        selectedCategories.set(channelId, interaction.values);
-        
-        // Clear any existing timeout since user has interacted
-        const existingInteraction = activeInteractions.get(channelId);
-        if (existingInteraction && existingInteraction.timeout) {
-            clearTimeout(existingInteraction.timeout);
-            activeInteractions.set(channelId, {
-                dropdownMessage: existingInteraction.dropdownMessage,
-                timeout: null,
-                userInteracted: true
-            });
-        }
-        
-        // Acknowledge the selection (ephemeral so only user sees it)
-        await interaction.reply({ 
-            content: `✅ Selected ${interaction.values.length} categor${interaction.values.length === 1 ? 'y' : 'ies'}. Now click "Confirm Selection" below to get your solution!`, 
-            ephemeral: true 
-        });
+        // Clear the interaction after processing
+        activeInteractions.delete(channelId);
     }
 });
 
@@ -353,8 +313,6 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 activeInteractions.delete(reaction.message.channel.id);
             }
             
-            // Clear selected categories
-            selectedCategories.delete(reaction.message.channel.id);
         } else if (reaction.emoji.name === '❌') {
             // User said the solution didn't help - send new dropdown
             try {
@@ -399,17 +357,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                         ])
                 );
                 
-                const confirmButton = new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('confirm_selection')
-                        .setLabel('Confirm Selection')
-                        .setStyle(ButtonStyle.Primary)
-                        .setEmoji('✅')
-                );
-                
                 const newDropdown = await channel.send({
                     content: '👇 Please select the category that matches your issue:',
-                    components: [categoryMenu, confirmButton]
+                    components: [categoryMenu]
                 });
                 
                 setupDropdownTimeout(channel.id, newDropdown, user);
@@ -419,8 +369,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 // Clean up feedback tracking
                 feedbackMessages.delete(reaction.message.id);
                 
-                // Clear selected categories and active interactions
-                selectedCategories.delete(reaction.message.channel.id);
+                // Clear active interactions
                 activeInteractions.delete(reaction.message.channel.id);
             } catch (error) {
                 console.error('Error handling negative feedback:', error);
