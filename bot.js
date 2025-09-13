@@ -152,16 +152,6 @@ client.on(Events.MessageCreate, async message => {
 
     // --- Only send dropdown once per ticket channel for regular users ---
     if (isTicketChannel(message.channel) && !respondedTickets.has(message.channel.id)) {
-        // Optionally: Provide an automatic solution if you want
-        const bestSolution = findBestSolution(message.content);
-        if (bestSolution && bestSolution.confidence > 0.3) {
-            const embed = new EmbedBuilder()
-                .setColor(0x00FF00)
-                .setTitle('💡 Coach Frank Says')
-                .setDescription(bestSolution.solution)
-                .setFooter({ text: 'Tag @Support if you need more help!' });
-            await message.reply({ embeds: [embed] });
-        }
         await sendDropdown(message);
         respondedTickets.add(message.channel.id);
         return;
