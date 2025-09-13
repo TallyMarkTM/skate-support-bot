@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js');
 
 // Track which ticket channels the bot has already responded in
@@ -7,6 +7,7 @@ const respondedTickets = new Set();
 // Track active interactions and timeouts
 const activeInteractions = new Map(); // channelId -> { dropdownMessage, timeout, userInteracted }
 const feedbackMessages = new Map(); // messageId -> { originalMessage, user }
+const selectedCategories = new Map(); // channelId -> selectedValues
 
 // Use environment variable for token in production, fallback to config.json for local development
 let config;
@@ -47,6 +48,7 @@ function isSupport(message) {
     return roles.some(role => supportRoles.includes(role));
 }
 function sendDropdown(message, isResend = false) {
+    
     const categoryMenu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('help_category')
@@ -76,13 +78,21 @@ function sendDropdown(message, isResend = false) {
             ])
     );
     
+    const confirmButton = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId('confirm_selection')
+            .setLabel('Get Help')
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji('✅')
+    );
+    
     const content = isResend ? 
         `👇 ${message.author} Please select the category that matches your issue:` : 
         '👇 Please select the category that matches your issue:';
     
     return message.reply({
         content: content,
-        components: [categoryMenu]
+        components: [categoryMenu, confirmButton]
     });
 }
 
@@ -232,24 +242,35 @@ client.on(Events.MessageCreate, async message => {
     }
 });
 
-// Handle interaction create events (for select menus)
+// Handle interaction create events (for select menus and buttons)
 client.on('interactionCreate', async interaction => {
-    if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
-        // Mark user as having interacted and completely clear the interaction
+    if (interaction.isButton() && interaction.customId === 'confirm_selection') {
+        // Handle confirm button click
         const channelId = interaction.channel.id;
         const existingInteraction = activeInteractions.get(channelId);
+        const userSelections = selectedCategories.get(channelId);
+        
         if (existingInteraction) {
             if (existingInteraction.timeout) {
                 clearTimeout(existingInteraction.timeout);
             }
-            // Completely remove the interaction from tracking to prevent any timeout issues
+            // Completely remove the interaction from tracking
             activeInteractions.delete(channelId);
         }
-
-        const selectedCategories = interaction.values;
+        
+        // Check if user has selected categories
+        if (!userSelections || userSelections.length === 0) {
+            await interaction.reply({ 
+                content: 'Please select one or more categories from the dropdown menu above first, then click "Get Help" again.', 
+                ephemeral: true 
+            });
+            return;
+        }
+        
+        // Process the selected categories
         const { knowledgeBase } = require('./knowledge-base.js');
         let response = '';
-        for (const category of selectedCategories) {
+        for (const category of userSelections) {
             const categoryData = knowledgeBase[category];
             if (categoryData && categoryData.solutions && categoryData.solutions.length > 0) {
                 const bestSolution = categoryData.solutions.reduce((a, b) => a.confidence > b.confidence ? a : b);
@@ -278,6 +299,22 @@ client.on('interactionCreate', async interaction => {
                 user: interaction.user
             });
         }
+        
+        // Clear the selected categories
+        selectedCategories.delete(channelId);
+        return;
+    }
+    
+    if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
+        // Store the selected categories for this channel
+        const channelId = interaction.channel.id;
+        selectedCategories.set(channelId, interaction.values);
+        
+        // Acknowledge the selection (ephemeral so only user sees it)
+        await interaction.reply({ 
+            content: `✅ Selected ${interaction.values.length} categor${interaction.values.length === 1 ? 'y' : 'ies'}. Now click "Get Help" below to get your solution!`, 
+            ephemeral: true 
+        });
     }
 });
 
@@ -305,6 +342,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 }
                 activeInteractions.delete(reaction.message.channel.id);
             }
+            
+            // Clear selected categories
+            selectedCategories.delete(reaction.message.channel.id);
         } else if (reaction.emoji.name === '❌') {
             // User said the solution didn't help - send new dropdown
             try {
@@ -358,6 +398,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                 
                 // Clean up feedback tracking
                 feedbackMessages.delete(reaction.message.id);
+                
+                // Clear selected categories
+                selectedCategories.delete(reaction.message.channel.id);
             } catch (error) {
                 console.error('Error handling negative feedback:', error);
             }
