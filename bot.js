@@ -167,7 +167,7 @@ client.on(Events.MessageCreate, async message => {
                 { name: '🔧 Automatic Support', value: 'Just describe your issue and I\'ll try to help! Keywords like "rpcs3", "graphics", "mods", etc. trigger automatic responses.', inline: false },
                 { name: '!ask [question]', value: 'Search for specific solutions (e.g., `!ask rpcs3 black screen`)', inline: false },
                 { name: '!test [question]', value: '🧪 **Support Only** - Test bot responses with detailed info (e.g., `!test catastrophic failure`)', inline: false },
-                { name: '!testbot', value: '🧪 **Support Only** - Activate testing mode to test dropdown interactions', inline: false },
+                { name: '!testbot', value: '🧪 **Support Only** - Activate testing mode to test dropdown interactions in any channel', inline: false },
                 { name: '!support', value: 'Force trigger the support system', inline: false },
                 { name: '!ping', value: 'Test if the bot is working', inline: false },
                 { name: '!hello', value: 'Get a friendly greeting', inline: false },
@@ -228,12 +228,11 @@ client.on(Events.MessageCreate, async message => {
         if (!isSupport(message)) {
             return message.reply('❌ Only support team members can use the testbot command.');
         }
-        if (!isTicketChannel(message.channel)) return;
 
-        // Send dropdown for testing
+        // Send dropdown for testing (works in any channel)
         const dropdownMessage = await sendDropdown(message);
         setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
-        await message.reply('🧪 **Testing Mode Activated** - You can now test the bot dropdown in this ticket!');
+        await message.reply('🧪 **Testing Mode Activated** - You can now test the bot dropdown!');
         return;
     }
 
