@@ -459,17 +459,28 @@ client.on(Events.MessageCreate, async message => {
 // Handle interaction create events (for select menus)
 client.on('interactionCreate', async interaction => {
     if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
-        // Store selections in memory or database if needed
-        // Optionally, acknowledge selection
-        await interaction.reply({ content: 'Selections saved! Click Submit when ready.', ephemeral: true });
-    }
-    if (interaction.isButton() && interaction.customId === 'submit_help') {
-        // Retrieve selections and provide solutions
-        // For demo, just reply
-        await interaction.reply({ content: 'Thank you! Your selections have been submitted. A support member will assist you soon.', ephemeral: true });
+        // Get all selected categories
+        const selectedCategories = interaction.values;
+        const { knowledgeBase } = require('./knowledge-base.js');
+
+        // Gather solutions for each selected category
+        let response = '';
+        for (const category of selectedCategories) {
+            const categoryData = knowledgeBase[category];
+            if (categoryData && categoryData.solutions && categoryData.solutions.length > 0) {
+                // Get the highest confidence solution for each category
+                const bestSolution = categoryData.solutions.reduce((a, b) => a.confidence > b.confidence ? a : b);
+                response += `**${category.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}**\n${bestSolution.solution}\n\n`;
+            }
+        }
+
+        if (response.length === 0) {
+            response = 'Sorry, no help available for your selections.';
+        }
+
+        await interaction.reply({ content: response, ephemeral: true });
     }
 });
-
 // Handle reaction events
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
     console.log(`Reaction detected: ${reaction.emoji.name} by ${user.username}`);
