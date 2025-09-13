@@ -319,6 +319,9 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                     await existingInteraction.dropdownMessage.delete().catch(() => {});
                 }
                 
+                // Delete the solution message that got the ❌ reaction
+                await reaction.message.delete().catch(() => {});
+                
                 // Send new dropdown
                 const newDropdown = await sendDropdown(reaction.message, false);
                 setupDropdownTimeout(reaction.message.channel.id, newDropdown, user);
