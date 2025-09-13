@@ -110,55 +110,19 @@ client.on(Events.MessageCreate, async message => {
         const supportRoles = ['Support', 'Moderator', 'Server Manager'];
         const userRoles = message.member?.roles.cache.map(role => role.name) || [];
         const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
-        
+
         if (!hasSupport) {
             return message.reply(`❌ Only support team members can use the test command.\n\n**Your roles:** ${userRoles.length > 0 ? userRoles.join(', ') : 'None'}\n**Required roles:** ${supportRoles.join(', ')}`);
         }
 
-        const testQuestion = message.content.slice(6); // Remove '!test '
-        const bestSolution = findBestSolution(testQuestion);
-        
-        if (bestSolution && bestSolution.confidence > 0.3) {
-            const embed = new EmbedBuilder()
-                .setColor(0xFF9900) // Orange color to distinguish test responses
-                .setTitle('🧪 Coach Frank Says (TEST MODE)')
-                .setDescription(bestSolution.solution)
-                .addFields(
-                    { name: 'Confidence Score', value: `${(bestSolution.confidence * 100).toFixed(1)}%`, inline: true },
-                    { name: 'Category', value: bestSolution.category, inline: true },
-                    { name: 'Issue Type', value: bestSolution.issue, inline: false }
-                )
-                .setFooter({ text: 'This is a test response - not sent to a real user' })
-                .setTimestamp();
-
-            const reply = await message.reply(bestSolution.solution);
-            await reply.react('✅');
-            await reply.react('❌');
-        } else {
-            const embed = new EmbedBuilder()
-                .setColor(0xFF0000)
-                .setTitle('🧪 Test Result: No Match Found')
-                .setDescription(`No solution found for: "${testQuestion}"`)
-                .addFields({
-                    name: 'Confidence Threshold',
-                    value: 'Minimum confidence needed: 30%',
-                    inline: false
-                })
-                .setFooter({ text: 'Consider adding this to the knowledge base if it\'s a common question' });
-
-            const reply = await message.reply({ embeds: [embed] });
-            await reply.react('✅');
-            await reply.react('❌');
-        }
-
-        // Only show dropdown in ticket-6181
-        if (message.channel.name === 'ticket-6181') {
+        // Only show dropdown in ticket channels
+        if (isTicketChannel) {
             const categoryMenu = new ActionRowBuilder().addComponents(
                 new StringSelectMenuBuilder()
                     .setCustomId('help_category')
                     .setPlaceholder('Select all categories that match your issue...')
-                    .setMinValues(1) // Minimum selections required
-                    .setMaxValues(5) // Maximum selections allowed (adjust as needed)
+                    .setMinValues(1)
+                    .setMaxValues(5)
                     .addOptions([
                         { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
                         { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
@@ -182,19 +146,14 @@ client.on(Events.MessageCreate, async message => {
                     ])
             );
 
-            const submitRow = new ActionRowBuilder().addComponents(
-                new ButtonBuilder()
-                    .setCustomId('submit_help')
-                    .setLabel('✅ Submit')
-                    .setStyle('Success')
-            );
-
             await message.reply({
-                content: '🚨 **Select ALL issues that apply and click Submit!**\nCheck all that match your problem, then hit Submit below.',
-                components: [categoryMenu, submitRow]
+                content: '🚨 Select ALL issues that apply and click Submit!\nCheck all that match your problem, then hit Submit below.',
+                components: [categoryMenu]
             });
-            return; // Prevents the rest of the !test logic from running
+            return;
         }
+
+        // If not in a ticket channel, do nothing
         return;
     }
 
