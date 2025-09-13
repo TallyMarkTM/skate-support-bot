@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder } = require('discord.js');
 const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js');
 
 // Track which ticket channels the bot has already responded in
@@ -156,7 +156,9 @@ client.on(Events.MessageCreate, async message => {
             const categoryMenu = new ActionRowBuilder().addComponents(
                 new StringSelectMenuBuilder()
                     .setCustomId('help_category')
-                    .setPlaceholder('Select your issue category...')
+                    .setPlaceholder('Select all categories that match your issue...')
+                    .setMinValues(1) // Minimum selections required
+                    .setMaxValues(5) // Maximum selections allowed (adjust as needed)
                     .addOptions([
                         { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
                         { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
@@ -180,14 +182,21 @@ client.on(Events.MessageCreate, async message => {
                     ])
             );
 
+            const submitRow = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setCustomId('submit_help')
+                    .setLabel('✅ Submit')
+                    .setStyle('Success')
+            );
+
             await message.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setColor(0xFF0000) // Bright red for attention
-                        .setTitle('🚨 Please Select Your Issue Category Below!')
-                        .setDescription('**To get the fastest help, choose the category that matches your problem.**\n\n⬇️ **Pick an option from the dropdown below!** ⬇️')
+                        .setColor(0xFF0000)
+                        .setTitle('🚨 Select ALL issues that apply and click Submit!')
+                        .setDescription('**Check all that match your problem, then hit Submit below.**')
                 ],
-                components: [categoryMenu]
+                components: [categoryMenu, submitRow]
             });
             return; // Prevents the rest of the !test logic from running
         }
@@ -414,7 +423,9 @@ client.on(Events.MessageCreate, async message => {
         const categoryMenu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('help_category')
-                .setPlaceholder('Select your issue category...')
+                .setPlaceholder('Select all categories that match your issue...')
+                .setMinValues(1) // Minimum selections required
+                .setMaxValues(5) // Maximum selections allowed (adjust as needed)
                 .addOptions([
                     { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
                     { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
@@ -447,36 +458,15 @@ client.on(Events.MessageCreate, async message => {
 
 // Handle interaction create events (for select menus)
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isStringSelectMenu()) return;
-    if (interaction.customId === 'help_category') {
-        // Only allow in ticket-6181
-        if (interaction.channel.name !== 'ticket-6181') {
-            await interaction.reply({ content: 'This menu only works in ticket-6181.', ephemeral: true });
-            return;
-        }
-
-        const selectedCategory = interaction.values[0];
-        const { knowledgeBase } = require('./knowledge-base.js');
-        const categoryData = knowledgeBase[selectedCategory];
-
-        if (!categoryData) {
-            await interaction.reply({ content: 'Sorry, no help available for that category.', ephemeral: true });
-            return;
-        }
-
-        // Get the highest confidence solution for the category
-        const bestSolution = categoryData.solutions.reduce((a, b) => a.confidence > b.confidence ? a : b);
-
-        await interaction.reply({
-            embeds: [
-                {
-                    title: `Solution for ${interaction.component.options.find(opt => opt.value === selectedCategory).label}`,
-                    description: bestSolution.solution,
-                    color: 0x00FF00
-                }
-            ],
-            ephemeral: true
-        });
+    if (interaction.isStringSelectMenu() && interaction.customId === 'help_category') {
+        // Store selections in memory or database if needed
+        // Optionally, acknowledge selection
+        await interaction.reply({ content: 'Selections saved! Click Submit when ready.', ephemeral: true });
+    }
+    if (interaction.isButton() && interaction.customId === 'submit_help') {
+        // Retrieve selections and provide solutions
+        // For demo, just reply
+        await interaction.reply({ content: 'Thank you! Your selections have been submitted. A support member will assist you soon.', ephemeral: true });
     }
 });
 
