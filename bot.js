@@ -152,6 +152,12 @@ client.on(Events.MessageCreate, async message => {
         const channelName = message.channel.name;
         return message.reply(`🔍 **Debug Info:**\n**User:** ${message.author.username}\n**Roles:** ${roles.join(', ') || 'None'}\n**Is Support:** ${isSupportUser}\n**Channel:** ${channelName} (${channelType})\n**Bot is working!**`);
     }
+    if (message.content === '!testdropdown') {
+        // Bypass all checks - just send dropdown for testing
+        const dropdownMessage = await sendDropdown(message);
+        setupDropdownTimeout(message.channel.id, dropdownMessage, message.author);
+        return message.reply('🧪 **Dropdown Test** - Testing dropdown without any restrictions!');
+    }
     if (message.content === '!serverinfo') {
         const guild = message.guild;
         const embed = new EmbedBuilder()
