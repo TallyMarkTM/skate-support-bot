@@ -59,7 +59,7 @@ function sendDropdown(message) {
                 { label: 'High FPS and Render Issues', value: 'performance' },
                 { label: 'General Help', value: 'general' },
                 { label: "CFSS/CUSTOM TEXTURES", value: 'cfss' },
-                { label: 'Maps and Mods', value: 'maps' },
+                { label: 'Skate 2 Maps New San Van', value: 'maps' },
                 { label: 'Graphics Quality Issues', value: 'quality' },
                 { label: 'Updates and DLC', value: 'updates' },
                 { label: 'File Extraction Issues', value: 'extraction' },
