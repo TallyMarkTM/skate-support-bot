@@ -110,13 +110,28 @@ client.on(Events.MessageCreate, async message => {
         const supportRoles = ['Support', 'Moderator', 'Server Manager'];
         const userRoles = message.member?.roles.cache.map(role => role.name) || [];
         const hasSupport = userRoles.some(roleName => supportRoles.includes(roleName));
-
         if (!hasSupport) {
             return message.reply(`❌ Only support team members can use the test command.\n\n**Your roles:** ${userRoles.length > 0 ? userRoles.join(', ') : 'None'}\n**Required roles:** ${supportRoles.join(', ')}`);
         }
 
-        // Only show dropdown in ticket channels
+        // Simulate a normal user message in a ticket channel
+        // Remove support role for this simulation
+        const simulatedUserRoles = userRoles.filter(role => !supportRoles.includes(role));
+        const simulatedMessage = {
+            ...message,
+            content: message.content.slice(6), // Remove '!test '
+            member: { ...message.member, roles: { cache: new Map(simulatedUserRoles.map(role => [role, { name: role }])) } }
+        };
+
+        // Call the ticket channel logic manually
+        // You can refactor your ticket channel logic into a function, e.g.:
+        // handleTicketChannelMessage(simulatedMessage);
+
+        // For now, just send the dropdown and solution as a normal user would get
         if (isTicketChannel) {
+            // Only send dropdown if we haven't already responded in this ticket
+            if (respondedTickets.has(message.channel.id)) return;
+
             const categoryMenu = new ActionRowBuilder().addComponents(
                 new StringSelectMenuBuilder()
                     .setCustomId('help_category')
@@ -147,13 +162,13 @@ client.on(Events.MessageCreate, async message => {
             );
 
             await message.reply({
-                content: '🚨 Select ALL issues that apply and click Submit!\nCheck all that match your problem, then hit Submit below.',
+                content: '👇 Please select the category that matches your issue:',
                 components: [categoryMenu]
             });
+
+            respondedTickets.add(message.channel.id);
             return;
         }
-
-        // If not in a ticket channel, do nothing
         return;
     }
 
