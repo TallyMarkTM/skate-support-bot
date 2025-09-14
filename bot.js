@@ -276,7 +276,7 @@ client.on(Events.MessageCreate, async message => {
             .setColor(0xFFD700)
             .setTitle('🪙 Coin Flip Challenge!')
             .setDescription(`**${message.author.username}** has challenged everyone to a coin flip!\n\nReact with 🪙 to join the flip!\n\n*The coin will flip in 15 seconds...*`)
-            .setFooter({ text: 'May the odds be ever in your favor!' })
+            .setFooter({ text: 'Good luck!' })
             .setTimestamp();
         
         const flipMessage = await message.reply({ embeds: [flipEmbed] });
