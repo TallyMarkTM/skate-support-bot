@@ -167,6 +167,7 @@ client.on(Events.MessageCreate, async message => {
         return message.reply({ embeds: [embed] });
     }
     if (message.content === '!flipcoin') {
+        console.log('Flipcoin command triggered by:', message.author.username);
         const flipEmbed = new EmbedBuilder()
             .setColor(0xFFD700)
             .setTitle('🪙 Coin Flip Challenge!')
@@ -175,18 +176,25 @@ client.on(Events.MessageCreate, async message => {
             .setTimestamp();
         
         const flipMessage = await message.reply({ embeds: [flipEmbed] });
+        console.log('Flipcoin message sent, adding reaction...');
         await flipMessage.react('🪙');
+        console.log('Reaction added, setting timeout...');
         
         // Wait 10 seconds, then flip the coin
         setTimeout(async () => {
             try {
+                console.log('Timeout triggered, processing coin flip...');
                 // Get all reactions
                 const reaction = flipMessage.reactions.cache.get('🪙');
-                if (!reaction) return;
+                if (!reaction) {
+                    console.log('No reaction found');
+                    return;
+                }
                 
                 // Get users who reacted (excluding bots)
                 const users = await reaction.users.fetch();
                 const participants = users.filter(user => !user.bot);
+                console.log('Participants:', participants.size);
                 
                 if (participants.size === 0) {
                     const noPlayersEmbed = new EmbedBuilder()
