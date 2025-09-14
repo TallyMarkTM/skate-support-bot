@@ -167,6 +167,11 @@ client.on(Events.MessageCreate, async message => {
         return message.reply({ embeds: [embed] });
     }
     if (message.content === '!flipcoin') {
+        // Only allow flipcoin in the commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!flipcoin` command can only be used in the 🤖-commands channel!');
+        }
+        
         console.log('Flipcoin command triggered by:', message.author.username);
         const flipEmbed = new EmbedBuilder()
             .setColor(0xFFD700)
