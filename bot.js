@@ -75,7 +75,8 @@ function sendDropdown(message, isResend = false) {
                 { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
                 { label: 'Game Crashes After Loading', value: 'gamecrashes' },
                 { label: 'Audio Issues', value: 'audio' },
-                { label: 'Skate 3 Online Help', value: 'online' }
+                { label: 'Skate 3 Online Help', value: 'online' },
+                { label: 'Increase Native FPS', value: 'fps' }
             ])
     );
     
@@ -390,7 +391,8 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                             { label: 'RPCS3 Crashes and Stability', value: 'crashes' },
                             { label: 'Game Crashes After Loading', value: 'gamecrashes' },
                             { label: 'Audio Issues', value: 'audio' },
-                            { label: 'Skate 3 Online Help', value: 'online' }
+                            { label: 'Skate 3 Online Help', value: 'online' },
+                            { label: 'Increase Native FPS', value: 'fps' }
                         ])
                 );
                 

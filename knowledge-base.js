@@ -285,6 +285,18 @@ const knowledgeBase = {
                 confidence: 0.95
             }
         ]
+    },
+
+    // Increase Native FPS
+    fps: {
+        keywords: ['increase fps', 'higher fps', 'more fps', 'boost fps', 'fps boost', 'native fps', 'increase native fps', 'higher native fps', 'fps increase', 'better fps', 'improve fps', 'fps improvement', 'fps settings', 'fps configuration', 'frame rate', 'frame rate increase', 'higher frame rate', 'boost frame rate', 'fps optimization', 'fps tuning'],
+        solutions: [
+            {
+                issue: "How to increase native FPS in RPCS3",
+                solution: "To increase your native FPS in RPCS3:\n\n**Step 1:** Close the game completely\n\n**Step 2:** Right-click on Skate 3 in your game list\n\n**Step 3:** Click \"Create or change custom configuration\" from default settings\n\n**Step 4:** Go to the **GPU** tab\n\n**Step 5:** Turn **Frame Limit** to **Off**\n\n**Step 6:** Go to the **Advanced Settings** tab\n\n**Step 7:** Turn your **VBlank Frequency** up (increase the value)\n\n**Step 8:** Click **Save**\n\n**Step 9:** Boot the game\n\nThis will increase your native FPS for better performance!",
+                confidence: 0.95
+            }
+        ]
     }
 };
 
