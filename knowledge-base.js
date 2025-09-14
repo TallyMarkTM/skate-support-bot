@@ -273,6 +273,18 @@ const knowledgeBase = {
                 confidence: 0.95
             }
         ]
+    },
+
+    // Skate 3 Online Help
+    online: {
+        keywords: ['online', 'skate 3 online', 'online help', 'multiplayer', 'online multiplayer', 'online mode', 'online play', 'skate online', 'online skate', 'online gaming', 'online support', 'online assistance', 'online community', 'online discord', 'online server'],
+        solutions: [
+            {
+                issue: "Skate 3 online help and multiplayer support",
+                solution: "Please join this Discord server and ask for help: https://discord.gg/CbmnY23vYu",
+                confidence: 0.95
+            }
+        ]
     }
 };
 
