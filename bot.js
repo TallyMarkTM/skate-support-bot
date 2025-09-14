@@ -166,6 +166,58 @@ client.on(Events.MessageCreate, async message => {
             .setTimestamp();
         return message.reply({ embeds: [embed] });
     }
+    if (message.content === '!flipcoin') {
+        const flipEmbed = new EmbedBuilder()
+            .setColor(0xFFD700)
+            .setTitle('🪙 Coin Flip Challenge!')
+            .setDescription(`**${message.author.username}** has challenged everyone to a coin flip!\n\nReact with 🪙 to join the flip!\n\n*The coin will flip in 10 seconds...*`)
+            .setFooter({ text: 'May the odds be ever in your favor!' })
+            .setTimestamp();
+        
+        const flipMessage = await message.reply({ embeds: [flipEmbed] });
+        await flipMessage.react('🪙');
+        
+        // Wait 10 seconds, then flip the coin
+        setTimeout(async () => {
+            try {
+                // Get all reactions
+                const reaction = flipMessage.reactions.cache.get('🪙');
+                if (!reaction) return;
+                
+                // Get users who reacted (excluding bots)
+                const users = await reaction.users.fetch();
+                const participants = users.filter(user => !user.bot);
+                
+                if (participants.size === 0) {
+                    const noPlayersEmbed = new EmbedBuilder()
+                        .setColor(0xFF6B6B)
+                        .setTitle('🪙 Coin Flip - No Players!')
+                        .setDescription('Nobody joined the coin flip! 😢\n\nTry again with `!flipcoin`')
+                        .setTimestamp();
+                    return flipMessage.edit({ embeds: [noPlayersEmbed] });
+                }
+                
+                // Pick a random winner
+                const winner = participants.random();
+                const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
+                
+                const resultEmbed = new EmbedBuilder()
+                    .setColor(0x00FF00)
+                    .setTitle('🪙 Coin Flip Results!')
+                    .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n🎉 **Winner:** ${winner}\n\n*Congratulations! You won the coin flip!*`)
+                    .setFooter({ text: `${participants.size} player${participants.size > 1 ? 's' : ''} participated` })
+                    .setTimestamp();
+                
+                await flipMessage.edit({ embeds: [resultEmbed] });
+                
+            } catch (error) {
+                console.error('Error in coin flip:', error);
+            }
+        }, 10000);
+        
+        return;
+    }
     if (message.content === '!help') {
         const helpEmbed = new EmbedBuilder()
             .setColor(0x00AE86)
@@ -177,6 +229,7 @@ client.on(Events.MessageCreate, async message => {
                 { name: '!test [question]', value: '🧪 **Support Only** - Test bot responses with detailed info (e.g., `!test catastrophic failure`)', inline: false },
                 { name: '!testdropdown', value: '🧪 **Testing Command** - Send dropdown for testing interactions', inline: false },
                 { name: '!support', value: 'Force trigger the support system', inline: false },
+                { name: '!flipcoin', value: '🎮 **Mini Game** - Start a coin flip challenge!', inline: false },
                 { name: '!ping', value: 'Test if the bot is working', inline: false },
                 { name: '!hello', value: 'Get a friendly greeting', inline: false },
                 { name: '!serverinfo', value: 'Show server information', inline: false }
