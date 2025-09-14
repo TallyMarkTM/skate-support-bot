@@ -30,7 +30,10 @@ function loadStats() {
 // Save stats to file
 function saveStats() {
     try {
+        console.log('Saving stats to:', statsFile);
+        console.log('Stats data:', winStats);
         fs.writeFileSync(statsFile, JSON.stringify(winStats, null, 2));
+        console.log('Stats saved successfully!');
     } catch (error) {
         console.error('Error saving stats:', error);
     }
@@ -51,6 +54,7 @@ function getUserStats(userId) {
 
 // Update user stats
 function updateUserStats(userId, won) {
+    console.log('Updating stats for user:', userId, 'won:', won);
     const stats = getUserStats(userId);
     stats.totalGames++;
     if (won) {
@@ -59,6 +63,7 @@ function updateUserStats(userId, won) {
         stats.losses++;
     }
     stats.winRate = stats.wins / stats.totalGames;
+    console.log('Updated stats:', stats);
     saveStats();
     return stats;
 }
