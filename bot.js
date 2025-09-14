@@ -197,12 +197,20 @@ client.on(Events.MessageCreate, async message => {
                 console.log('Participants:', participants.size);
                 
                 if (participants.size === 0) {
-                    const noPlayersEmbed = new EmbedBuilder()
-                        .setColor(0xFF6B6B)
-                        .setTitle('🪙 Coin Flip - No Players!')
-                        .setDescription('Nobody joined the coin flip! 😢\n\nTry again with `!flipcoin`')
+                    // Coach Frank plays if nobody else joins!
+                    const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                    const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
+                    const coachFrankWins = Math.random() < 0.5;
+                    
+                    const coachFrankEmbed = new EmbedBuilder()
+                        .setColor(0x00FF00)
+                        .setTitle('🪙 Coin Flip - Coach Frank Joins!')
+                        .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n${coachFrankWins ? 
+                            '🤖 **Coach Frank wins!** Better luck next time!' : 
+                            '🎉 **You win!** You beat Coach Frank!'}\n\n*Coach Frank joined because nobody else wanted to play!*`)
+                        .setFooter({ text: 'Coach Frank is always ready to play!' })
                         .setTimestamp();
-                    return flipMessage.edit({ embeds: [noPlayersEmbed] });
+                    return flipMessage.edit({ embeds: [coachFrankEmbed] });
                 }
                 
                 // Pick a random winner
