@@ -10,6 +10,9 @@ const respondedTickets = new Set();
 const activeInteractions = new Map(); // channelId -> { dropdownMessage, timeout, userInteracted }
 const feedbackMessages = new Map(); // messageId -> { originalMessage, user }
 
+// Cooldown tracking for flipcoin command
+const flipcoinCooldowns = new Map(); // userId -> timestamp
+
 // Win tracking system
 const statsFile = path.join('/app/data', 'win-stats.json');
 let winStats = {};
@@ -249,6 +252,24 @@ client.on(Events.MessageCreate, async message => {
         if (message.channel.name !== '🤖-commands') {
             return message.reply('❌ The `!flipcoin` command can only be used in the 🤖-commands channel!');
         }
+        
+        // Check cooldown
+        const userId = message.author.id;
+        const now = Date.now();
+        const cooldownTime = 16000; // 16 seconds
+        
+        if (flipcoinCooldowns.has(userId)) {
+            const lastUsed = flipcoinCooldowns.get(userId);
+            const timeLeft = cooldownTime - (now - lastUsed);
+            
+            if (timeLeft > 0) {
+                const secondsLeft = Math.ceil(timeLeft / 1000);
+                return message.reply(`⏰ You can use \`!flipcoin\` again in ${secondsLeft} seconds!`);
+            }
+        }
+        
+        // Set cooldown
+        flipcoinCooldowns.set(userId, now);
         
         console.log('Flipcoin command triggered by:', message.author.username);
         const flipEmbed = new EmbedBuilder()
