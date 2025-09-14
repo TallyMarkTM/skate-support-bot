@@ -345,13 +345,18 @@ client.on(Events.MessageCreate, async message => {
                 // Add stats for all participants
                 const statsFields = [];
                 for (const participant of participants) {
+                    // Get fresh stats after the game
                     const participantStats = getUserStats(participant.id);
                     const wins = Math.round(participantStats.winRate * participantStats.totalGames);
                     const losses = participantStats.totalGames - wins;
                     const isWinner = participant.id === winner.id;
                     const prefix = isWinner ? '🏆' : '📊';
+                    const username = participant.username || participant.displayName || `User ${participant.id}`;
+                    
+                    console.log(`Displaying stats for ${username}:`, participantStats);
+                    
                     statsFields.push({
-                        name: `${prefix} ${participant.username}'s Stats`,
+                        name: `${prefix} ${username}'s Stats`,
                         value: `${wins}W/${losses}L (${(participantStats.winRate * 100).toFixed(1)}%)`,
                         inline: true
                     });
