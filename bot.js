@@ -11,7 +11,7 @@ const activeInteractions = new Map(); // channelId -> { dropdownMessage, timeout
 const feedbackMessages = new Map(); // messageId -> { originalMessage, user }
 
 // Win tracking system
-const statsFile = path.join(__dirname, 'win-stats.json');
+const statsFile = path.join('/app/data', 'win-stats.json');
 let winStats = {};
 
 // Load existing stats
@@ -60,8 +60,6 @@ function saveStats() {
 function getUserStats(userId) {
     if (!winStats[userId]) {
         winStats[userId] = {
-            wins: 0,
-            losses: 0,
             totalGames: 0,
             winRate: 0
         };
@@ -73,13 +71,13 @@ function getUserStats(userId) {
 function updateUserStats(userId, won) {
     console.log('Updating stats for user:', userId, 'won:', won);
     const stats = getUserStats(userId);
+    
+    // Calculate new win rate using running average
+    const currentWins = stats.winRate * stats.totalGames;
+    const newWins = won ? currentWins + 1 : currentWins;
     stats.totalGames++;
-    if (won) {
-        stats.wins++;
-    } else {
-        stats.losses++;
-    }
-    stats.winRate = stats.wins / stats.totalGames;
+    stats.winRate = newWins / stats.totalGames;
+    
     console.log('Updated stats:', stats);
     saveStats();
     return stats;
@@ -298,8 +296,8 @@ client.on(Events.MessageCreate, async message => {
                             '🤖 **Coach Frank wins!** Better luck next time!' : 
                             '🎉 **You win!** You beat Coach Frank!'}\n\n*Coach Frank joined because nobody else wanted to play!*`)
                         .addFields(
-                            { name: `📊 ${message.author.username}'s Stats`, value: `${playerStats.wins}W/${playerStats.losses}L (${(playerStats.winRate * 100).toFixed(1)}%)`, inline: true },
-                            { name: '🤖 Coach Frank\'s Stats', value: `${coachStats.wins}W/${coachStats.losses}L (${(coachStats.winRate * 100).toFixed(1)}%)`, inline: true }
+                            { name: `📊 ${message.author.username}'s Stats`, value: `${Math.round(playerStats.winRate * playerStats.totalGames)}W/${playerStats.totalGames - Math.round(playerStats.winRate * playerStats.totalGames)}L (${(playerStats.winRate * 100).toFixed(1)}%)`, inline: true },
+                            { name: '🤖 Coach Frank\'s Stats', value: `${Math.round(coachStats.winRate * coachStats.totalGames)}W/${coachStats.totalGames - Math.round(coachStats.winRate * coachStats.totalGames)}L (${(coachStats.winRate * 100).toFixed(1)}%)`, inline: true }
                         )
                         .setFooter({ text: 'Coach Frank is always ready to play!' })
                         .setTimestamp();
@@ -321,7 +319,7 @@ client.on(Events.MessageCreate, async message => {
                     .setTitle('🪙 Coin Flip Results!')
                     .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n🎉 **Winner:** ${winner}\n\n*Congratulations! You won the coin flip!*`)
                     .addFields(
-                        { name: `📊 ${winner.username}'s Stats`, value: `${winnerStats.wins}W/${winnerStats.losses}L (${(winnerStats.winRate * 100).toFixed(1)}%)`, inline: true },
+                        { name: `📊 ${winner.username}'s Stats`, value: `${Math.round(winnerStats.winRate * winnerStats.totalGames)}W/${winnerStats.totalGames - Math.round(winnerStats.winRate * winnerStats.totalGames)}L (${(winnerStats.winRate * 100).toFixed(1)}%)`, inline: true },
                         { name: '🎮 Participants', value: `${participants.size} player${participants.size > 1 ? 's' : ''}`, inline: true }
                     )
                     .setFooter({ text: 'Keep playing to climb the leaderboard!' })
@@ -343,12 +341,15 @@ client.on(Events.MessageCreate, async message => {
         }
         
         const userStats = getUserStats(message.author.id);
+        const wins = Math.round(userStats.winRate * userStats.totalGames);
+        const losses = userStats.totalGames - wins;
+        
         const statsEmbed = new EmbedBuilder()
             .setColor(0x00AE86)
             .setTitle(`📊 ${message.author.username}'s Coin Flip Stats`)
             .addFields(
-                { name: '🏆 Wins', value: userStats.wins.toString(), inline: true },
-                { name: '💔 Losses', value: userStats.losses.toString(), inline: true },
+                { name: '🏆 Wins', value: wins.toString(), inline: true },
+                { name: '💔 Losses', value: losses.toString(), inline: true },
                 { name: '🎮 Total Games', value: userStats.totalGames.toString(), inline: true },
                 { name: '📈 Win Rate', value: `${(userStats.winRate * 100).toFixed(1)}%`, inline: true }
             )
@@ -386,7 +387,9 @@ client.on(Events.MessageCreate, async message => {
             const user = message.guild.members.cache.get(userId);
             const username = user ? user.user.username : `User ${userId}`;
             const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
-            leaderboardText += `${medal} **${username}** - ${stats.wins}W/${stats.losses}L (${(stats.winRate * 100).toFixed(1)}%)\n`;
+            const wins = Math.round(stats.winRate * stats.totalGames);
+            const losses = stats.totalGames - wins;
+            leaderboardText += `${medal} **${username}** - ${wins}W/${losses}L (${(stats.winRate * 100).toFixed(1)}%)\n`;
         }
         
         leaderboardEmbed.addFields({ name: 'Top Players', value: leaderboardText, inline: false });
@@ -394,9 +397,11 @@ client.on(Events.MessageCreate, async message => {
         // Add Coach Frank's stats
         const coachStats = getUserStats('coachFrank');
         if (coachStats.totalGames > 0) {
+            const coachWins = Math.round(coachStats.winRate * coachStats.totalGames);
+            const coachLosses = coachStats.totalGames - coachWins;
             leaderboardEmbed.addFields({ 
                 name: '🤖 Coach Frank', 
-                value: `${coachStats.wins}W/${coachStats.losses}L (${(coachStats.winRate * 100).toFixed(1)}%)`, 
+                value: `${coachWins}W/${coachLosses}L (${(coachStats.winRate * 100).toFixed(1)}%)`, 
                 inline: false 
             });
         }
