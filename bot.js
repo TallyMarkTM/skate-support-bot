@@ -309,14 +309,17 @@ client.on(Events.MessageCreate, async message => {
                     return;
                 }
                 
-                // Get users who reacted (excluding bots)
+                // Get users who reacted (excluding bots and Coach Frank)
                 const users = await reaction.users.fetch();
                 console.log('All users who reacted:', Array.from(users.values()).map(u => u ? `${u.username} (${u.id}, bot: ${u.bot})` : 'undefined'));
-                const participants = Array.from(users.values()).filter(user => user && user.id && !user.bot);
-                console.log('Participants after filtering:', participants.map(p => `${p.username} (${p.id})`));
-                console.log('Participants count:', participants.length);
+                const reactedUsers = Array.from(users.values()).filter(user => user && user.id && !user.bot && user.id !== client.user.id);
                 
-                if (participants.length === 0) {
+                // Check if anyone else joined (excluding the starter)
+                const otherParticipants = reactedUsers.filter(user => user.id !== message.author.id);
+                console.log('Other participants (excluding starter and Coach Frank):', otherParticipants.map(p => `${p.username} (${p.id})`));
+                console.log('Other participants count:', otherParticipants.length);
+                
+                if (otherParticipants.length === 0) {
                     // Coach Frank plays if nobody else joins!
                     const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
                     const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
@@ -340,6 +343,10 @@ client.on(Events.MessageCreate, async message => {
                         .setTimestamp();
                     return flipMessage.edit({ embeds: [coachFrankEmbed] });
                 }
+                
+                // Create participants array: starter + other participants
+                const participants = [message.author, ...otherParticipants];
+                console.log('Final participants:', participants.map(p => `${p.username} (${p.id})`));
                 
                 // Pick a random winner
                 const winner = participants[Math.floor(Math.random() * participants.length)];
