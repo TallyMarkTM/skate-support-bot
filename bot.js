@@ -30,9 +30,23 @@ function loadStats() {
     }
 }
 
+// Clean up invalid entries from stats
+function cleanupStats() {
+    const validEntries = {};
+    for (const [userId, stats] of Object.entries(winStats)) {
+        if (userId && userId !== 'undefined' && userId !== 'null' && typeof userId === 'string') {
+            validEntries[userId] = stats;
+        }
+    }
+    winStats = validEntries;
+}
+
 // Save stats to file
 function saveStats() {
     try {
+        // Clean up invalid entries before saving
+        cleanupStats();
+        
         console.log('Saving stats to:', statsFile);
         console.log('Stats data:', winStats);
         
@@ -342,9 +356,11 @@ client.on(Events.MessageCreate, async message => {
                     .setFooter({ text: 'Keep playing to climb the leaderboard!' })
                     .setTimestamp();
                 
-                // Add stats for all participants
+                // Add stats for all participants (filter out invalid ones)
                 const statsFields = [];
-                for (const participant of participants) {
+                const validParticipants = participants.filter(p => p && p.id && p.id !== 'undefined');
+                
+                for (const participant of validParticipants) {
                     // Get fresh stats after the game
                     const participantStats = getUserStats(participant.id);
                     const wins = Math.round(participantStats.winRate * participantStats.totalGames);
