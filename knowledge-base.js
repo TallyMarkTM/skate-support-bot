@@ -2,7 +2,6 @@
 const knowledgeBase = {
     // RPCS3 Setup Issues
     rpcs3: {
-        keywords: ['rpcs3', 'rpcs', 'rpc3', 'rpsc3', 'rpcs', 'setup', 'set up', 'setup', 'download', 'donwload', 'downlaod', 'install', 'instal', 'instll', 'emulator', 'emulater', 'emulatir', 'how do i', 'how do I', 'how to setup', 'how to set up', 'setting up', 'seting up', 'get rpcs3', 'getting rpcs3', 'where to download', 'where can i get', 'need rpcs3', 'rpcs3 help', 'rpcs3 guide', 'first time', 'new to rpcs3', 'never used rpcs3', 'rpcs3 tutorial', 'rpcs3 installation'],
         solutions: [
             {
                 issue: "RPCS3 download/setup issues",
@@ -19,7 +18,6 @@ const knowledgeBase = {
 
     // Savefile/Gamesave Issues
     savefiles: {
-        keywords: ['skate.p', 'skate.p', 'skatep', 'skate p', 'skater.p', 'skaterp', 'skater p', 'savefile', 'save file', 'savefle', 'safefile', 'gamesave', 'game save', 'gamesav', 'where is skate.p', 'where is skatep', 'where is skater.p', 'where is skaterp', 'install savefile', 'instal savefile', 'savedata', 'save data', 'savedata', 'save location', 'save locaton'],
         solutions: [
             {
                 issue: "Skate.p location and savefile installation",
@@ -31,7 +29,6 @@ const knowledgeBase = {
 
     // Graphics/Savefile Issues
     graphics: {
-        keywords: ['graphics', 'grafics', 'graphix', 'grphics', 'blank deck', 'blnk deck', 'board graphics', 'bord graphics', 'missing graphics', 'missin graphics', 'rpcn', 'rpc n', 'deck is blank', 'deck is blnk', 'no graphics', 'no grafics', 'graphics are missing', 'grafics are missing', 'board is blank', 'skateboard blank', 'skateboard is blank', 'deck has no graphics', 'no deck graphics', 'board has no graphics', 'graphics not showing', 'graphics not loading', 'missing board graphics', 'blank board', 'empty deck', 'white deck', 'plain deck'],
         solutions: [
             {
                 issue: "Missing board graphics after savefile replacement",
@@ -48,7 +45,6 @@ const knowledgeBase = {
 
     // Black Screen Issues
     blackscreen: {
-        keywords: ['black screen', 'blck screen', 'blackscreen', 'blckscreen', 'black scrn', 'won\'t load', 'wont load', 'will not load', 'freezes', 'frezes', 'freeze', 'freez', 'crash', 'crsh', 'crashes', 'loading', 'loding', 'loadng', 'stuck on loading', 'stuck loading', 'game not starting', 'game wont start', 'nothing happens', 'blank screen', 'screen is black', 'just black', 'only black screen', 'game freezes', 'stuck on black', 'black when loading', 'loading forever', 'infinite loading'],
         solutions: [
             {
                 issue: "Black screen on game launch",
@@ -60,7 +56,6 @@ const knowledgeBase = {
 
     // Native Menu Issues
     nativemenu: {
-        keywords: ['native menu', 'natve menu', 'native mnu', 'nativemenu', 'nativmenu', 'native', 'natve', 'menu', 'mnu', 's3m', 'wont work', 'wnt work', 'won\'t work', 'doesn\'t work', 'doesnt work', 'dosnt work', 'not working', 'not workng', 'menu not working', 'mnu not working', 'menu wont open', 'menu wnt open', 'menu won\'t open', 'scanning for aob', 'scaning for aob', 'scanning aob', 'scaning aob', 'stuck on scanning', 'stuck on scaning', 'aobs', 'aob', 'menu broken', 'menu broke', 'mods not working', 'mods dont work', 'mods wont work', 'cant access menu', 'menu not opening', 'menu loading forever', 'menu stuck', 'please update your game', 'update your game', 'menu says update', 'menu error', 'menu crash'],
         solutions: [
             {
                 issue: "Native menu stuck on 'scanning for AoB's'",
@@ -82,7 +77,6 @@ const knowledgeBase = {
 
     // Mod Installation Issues
     mods: {
-        keywords: ['mods', 'big files', 'quickbms', 'big gui', 'unpacking', 'content folder', 'mod installation'],
         solutions: [
             {
                 issue: "Mod installation problems",
@@ -99,7 +93,6 @@ const knowledgeBase = {
 
     // High FPS and Render Issues
     performance: {
-        keywords: ['high fps', 'render distance', 'fps mod', 'clipping', 'render issues', 'performance'],
         solutions: [
             {
                 issue: "High FPS mod causing render/clipping issues",
@@ -111,7 +104,6 @@ const knowledgeBase = {
 
     // General Help
     general: {
-        keywords: ['help', 'guide', 'tutorial', 'how to', 'setup', 'beginner'],
         solutions: [
             {
                 issue: "General help needed",
@@ -123,7 +115,6 @@ const knowledgeBase = {
 
     // CFSS Issues
     cfss: {
-        keywords: ['cfss', 'coach franks skate shop', 'skate shop', 'how do i use cfss', 'cfss help', 'coach frank skate shop', 'cfss textures', 'make textures', 'cfss files', 'texture tutorial'],
         solutions: [
             {
                 issue: "CFSS (Coach Frank's Skate Shop) help",
@@ -135,7 +126,6 @@ const knowledgeBase = {
 
     // Maps and Mods
     maps: {
-        keywords: ['skate 2 maps', 'skate 2', 'new san van', 'san van', 'maps', 'custom maps', 'map mod', 'install maps'],
         solutions: [
             {
                 issue: "Skate 2 maps and New San Van mod installation",
@@ -147,7 +137,6 @@ const knowledgeBase = {
 
     // Graphics Quality Issues
     quality: {
-        keywords: ['blurry', 'blury', 'blury', 'blurr', 'game is blurry', 'game is blury', 'looks bad', 'looks bd', 'doesnt look good', 'dosnt look good', 'doesn\'t look good', 'bad quality', 'bd quality', 'low quality', 'low qualiy', 'pixelated', 'pixelated', 'pixlated', 'resolution', 'resoluton', 'resoltion', 'graphics quality', 'grafics quality', 'game quality', 'game qualiy', 'looks terrible', 'looks terible', 'looks awful', 'looks awfull', 'fuzzy', 'unclear', 'not sharp', 'low res', 'low resolution', 'poor quality', 'bad graphics', 'graphics look bad', 'game looks fuzzy', 'improve graphics', 'better graphics', 'higher resolution', 'increase resolution'],
         solutions: [
             {
                 issue: "Game is blurry or doesn't look good",
@@ -159,7 +148,6 @@ const knowledgeBase = {
 
     // Updates and DLC (Universal)
     updates: {
-        keywords: ['update', 'updates', 'dlc', 'version', 'blus', 'bles', 'game update', 'pkg', 'how to update', 'update my game', 'game version', 'xenia', 'xenia update', 'xenia dlc', 'xbox', 'xbox 360', 'console', 'get updates', 'get dlc', '1.05', '1,05', 'need 1.05', 'need 1,05', 's3m', 'version 1.05', 'version 1,05', 'update to 1.05', 'update to 1,05'],
         solutions: [
             {
                 issue: "Game updates and DLC for all platforms",
@@ -171,7 +159,6 @@ const knowledgeBase = {
 
     // File Extraction Issues
     extraction: {
-        keywords: ['catastrophic failure', 'catasrtophic failure', 'catastrophic', 'catasrtophic', 'extract', 'extraction', 'skate 3 file', 'can\'t extract', 'cannot extract', 'won\'t extract', 'wont extract', 'extraction failed', 'failed to extract', 'error extracting', 'zip error', 'rar error', 'archive error', 'file catastrophic', 'file catasrtophic', 'put it into rpcs3', 'take the skate 3', 'unzip error', 'unzip failed', 'unrar error', 'unrar failed', 'corrupt archive', 'corrupted file', 'file is corrupted', 'broken zip', 'broken rar', 'extraction error', 'cant unzip', 'cant unrar', 'how to extract', 'how do i extract', 'extract files', 'unpack files', 'decompress files'],
         solutions: [
             {
                 issue: "Catastrophic failure when extracting Skate 3 files",
@@ -183,7 +170,6 @@ const knowledgeBase = {
 
     // Game Performance Issues (RPCS3 Only)
     gameperformance: {
-        keywords: ['slow motion', 'slow motin', 'slowmotion', 'game slow', 'game slo', 'game is slow', 'game is slo', 'slowmo', 'slow mo', 'slo mo', 'running slow', 'runing slow', 'laggy', 'lagy', 'lag', 'choppy', 'chopy', 'low fps', 'low fp', 'bad fps'],
         solutions: [
             {
                 issue: "Game is in slow motion (RPCS3 Only)",
@@ -195,7 +181,6 @@ const knowledgeBase = {
 
     // Physics and Clipping Issues
     physics: {
-        keywords: ['falling through floor', 'clipping through floor', 'skater falls through', 'going through ground', 'floor glitch', 'physics bug', 'falling through map', 'clipping bug'],
         solutions: [
             {
                 issue: "Skater keeps falling through the floor",
@@ -207,7 +192,6 @@ const knowledgeBase = {
 
     // Display Issues
     display: {
-        keywords: ['billboards blacked out', 'billboards black', 'edit skater preview black', 'preview pictures black', 'black billboards', 'skater preview missing', 'black preview', 'missing billboards'],
         solutions: [
             {
                 issue: "Billboards and edit skater preview pictures are blacked out",
@@ -219,7 +203,6 @@ const knowledgeBase = {
 
     // RPCS3 Software Detection
     software: {
-        keywords: ['could not find any software', 'no software found', 'rpcs3 no software', 'software not detected', 'game not showing', 'rpcs3 empty', 'no games detected', 'find any software', 'any software', 'software found', 'no games', 'empty rpcs3'],
         solutions: [
             {
                 issue: "RPCS3 says it could not find any software",
@@ -231,7 +214,6 @@ const knowledgeBase = {
 
     // RPCS3 Crashes and Stability
     crashes: {
-        keywords: ['rpcs3 crashes', 'rpcs3 crshes', 'rpc3 crashes', 'rpcs3 freezes', 'rpcs3 frezes', 'rpc3 freezes', 'rpcs3 crash', 'rpcs3 crsh', 'rpc3 crash', 'rpcs3 freeze', 'rpcs3 freez', 'rpc3 freeze', 'emulator crash', 'emulater crash', 'emulator freeze', 'emulater freeze', 'rpcs3 stops working', 'rpcs3 stops workng', 'rpc3 stops working', 'rpcs3 not responding', 'rpcs3 not respondin', 'rpc3 not responding'],
         solutions: [
             {
                 issue: "RPCS3 crashes or freezes - CPU requirements",
@@ -253,7 +235,6 @@ const knowledgeBase = {
 
     // Game Crashes After Loading
     gamecrashes: {
-        keywords: ['game crashes after loading', 'crashes after few seconds', 'crashes after minutes', 'game loads then crashes', 'crashes fast', 'quick crash', 'game stops working'],
         solutions: [
             {
                 issue: "Game loads but crashes after a few seconds or minutes",
@@ -265,7 +246,6 @@ const knowledgeBase = {
 
     // Audio Issues
     audio: {
-        keywords: ['audio', 'sound', 'audio issues', 'bad audio', 'popping', 'crackling', 'stuttering', 'audio stuttering', 'sound stuttering', 'audio crackling', 'sound crackling', 'audio popping', 'sound popping', 'audio buffering', 'sound buffering', 'audio problems', 'sound problems', 'no sound', 'no audio', 'muted', 'quiet audio', 'low volume', 'audio quality', 'sound quality'],
         solutions: [
             {
                 issue: "RPCS3 audio issues like popping, crackling, or stuttering",
@@ -277,7 +257,6 @@ const knowledgeBase = {
 
     // Skate 3 Online Help
     online: {
-        keywords: ['online', 'skate 3 online', 'online help', 'multiplayer', 'online multiplayer', 'online mode', 'online play', 'skate online', 'online skate', 'online gaming', 'online support', 'online assistance', 'online community', 'online discord', 'online server'],
         solutions: [
             {
                 issue: "Skate 3 online help and multiplayer support",
@@ -289,7 +268,6 @@ const knowledgeBase = {
 
     // Increase Native FPS
     fps: {
-        keywords: ['increase fps', 'higher fps', 'more fps', 'boost fps', 'fps boost', 'native fps', 'increase native fps', 'higher native fps', 'fps increase', 'better fps', 'improve fps', 'fps improvement', 'fps settings', 'fps configuration', 'frame rate', 'frame rate increase', 'higher frame rate', 'boost frame rate', 'fps optimization', 'fps tuning'],
         solutions: [
             {
                 issue: "How to increase native FPS in RPCS3",
@@ -300,119 +278,70 @@ const knowledgeBase = {
     }
 };
 
-// Function to find the best matching solution
+// Function to find the best matching solution (simplified for !test command)
 function findBestSolution(userMessage) {
     const message = userMessage.toLowerCase();
-    let bestMatch = null;
-    let highestScore = 0;
-
-    // Check each category
-    for (const [category, data] of Object.entries(knowledgeBase)) {
-        let score = 0;
-        let exactMatches = 0;
-        let partialMatches = 0;
-        
-        // Count keyword matches with different weights
-        for (const keyword of data.keywords) {
-            const keywordLower = keyword.toLowerCase();
-            if (message.includes(keywordLower)) {
-                // Give higher weight to longer, more specific keywords
-                const keywordWeight = Math.max(1, keywordLower.length / 5);
-                
-                // Bonus for exact word matches vs partial matches
-                const wordBoundaryRegex = new RegExp('\\b' + keywordLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
-                if (wordBoundaryRegex.test(message)) {
-                    exactMatches++;
-                    score += keywordWeight * 1.5; // Bonus for exact word match
-                } else {
-                    partialMatches++;
-                    score += keywordWeight;
-                }
-            }
-        }
-        
-        // Bonus for multiple keyword matches in the same category
-        if (exactMatches + partialMatches > 1) {
-            score *= 1.2; // 20% bonus for multiple matches
-        }
-        
-        // If we found keyword matches, check solutions
-        if (score > 0) {
-            for (const solution of data.solutions) {
-                const totalScore = score * solution.confidence;
-                if (totalScore > highestScore) {
-                    highestScore = totalScore;
-                    bestMatch = {
-                        category,
-                        solution: solution.solution,
-                        confidence: solution.confidence,
-                        issue: solution.issue,
-                        keywordScore: score,
-                        exactMatches,
-                        partialMatches
-                    };
-                }
-            }
-        }
-    }
-
-    return bestMatch;
-}
-
-// Function to get multiple relevant solutions
-function getRelevantSolutions(userMessage, limit = 3) {
-    const message = userMessage.toLowerCase();
-    const solutions = [];
-
-    for (const [category, data] of Object.entries(knowledgeBase)) {
-        let score = 0;
-        let exactMatches = 0;
-        let partialMatches = 0;
-
-        // Count keyword matches with similar weighting as findBestSolution
-        for (const keyword of data.keywords) {
-            const keywordLower = keyword.toLowerCase();
-            if (message.includes(keywordLower)) {
-                const keywordWeight = Math.max(1, keywordLower.length / 5);
-
-                const wordBoundaryRegex = new RegExp('\\b' + keywordLower.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&') + '\\b');
-                if (wordBoundaryRegex.test(message)) {
-                    exactMatches++;
-                    score += keywordWeight * 1.5; // bonus for exact word match
-                } else {
-                    partialMatches++;
-                    score += keywordWeight;
-                }
-            }
-        }
-
-        // Bonus for multiple matches in the same category
-        if (exactMatches + partialMatches > 1) {
-            score *= 1.2;
-        }
-
-        if (score > 0) {
-            for (const solution of data.solutions) {
-                solutions.push({
+    
+    // Simple keyword matching for common terms
+    const keywordMap = {
+        'rpcs3': 'rpcs3',
+        'setup': 'rpcs3',
+        'install': 'rpcs3',
+        'download': 'rpcs3',
+        'savefile': 'savefiles',
+        'skate.p': 'savefiles',
+        'graphics': 'graphics',
+        'blank deck': 'graphics',
+        'black screen': 'blackscreen',
+        'native menu': 'nativemenu',
+        's3m': 'nativemenu',
+        'mods': 'mods',
+        'performance': 'performance',
+        'fps': 'performance',
+        'cfss': 'cfss',
+        'maps': 'maps',
+        'quality': 'quality',
+        'blurry': 'quality',
+        'update': 'updates',
+        'dlc': 'updates',
+        'extract': 'extraction',
+        'catastrophic': 'extraction',
+        'slow motion': 'gameperformance',
+        'physics': 'physics',
+        'clipping': 'physics',
+        'display': 'display',
+        'billboards': 'display',
+        'software': 'software',
+        'crashes': 'crashes',
+        'crash': 'crashes',
+        'audio': 'audio',
+        'sound': 'audio',
+        'online': 'online',
+        'multiplayer': 'online',
+        'increase fps': 'fps',
+        'native fps': 'fps'
+    };
+    
+    // Find matching category
+    for (const [keyword, category] of Object.entries(keywordMap)) {
+        if (message.includes(keyword)) {
+            const categoryData = knowledgeBase[category];
+            if (categoryData && categoryData.solutions && categoryData.solutions.length > 0) {
+                const bestSolution = categoryData.solutions.reduce((a, b) => a.confidence > b.confidence ? a : b);
+                return {
                     category,
-                    solution: solution.solution,
-                    confidence: solution.confidence * score,
-                    issue: solution.issue,
-                    keywordScore: score,
-                    exactMatches,
-                    partialMatches
-                });
+                    solution: bestSolution.solution,
+                    confidence: bestSolution.confidence,
+                    issue: bestSolution.issue
+                };
             }
         }
     }
-
-    return solutions
-        .sort((a, b) => b.confidence - a.confidence)
-        .slice(0, limit);
+    
+    return null;
 }
 
 module.exports = {
     knowledgeBase,
-    findBestSolution,
-    getRelevantSolutions
+    findBestSolution
 };
