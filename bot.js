@@ -254,7 +254,7 @@ client.on(Events.MessageCreate, async message => {
         const flipEmbed = new EmbedBuilder()
             .setColor(0xFFD700)
             .setTitle('🪙 Coin Flip Challenge!')
-            .setDescription(`**${message.author.username}** has challenged everyone to a coin flip!\n\nReact with 🪙 to join the flip!\n\n*The coin will flip in 1 minute...*`)
+            .setDescription(`**${message.author.username}** has challenged everyone to a coin flip!\n\nReact with 🪙 to join the flip!\n\n*The coin will flip in 15 seconds...*`)
             .setFooter({ text: 'May the odds be ever in your favor!' })
             .setTimestamp();
         
@@ -263,7 +263,7 @@ client.on(Events.MessageCreate, async message => {
         await flipMessage.react('🪙');
         console.log('Reaction added, setting timeout...');
         
-        // Wait 1 minute, then flip the coin
+        // Wait 15 seconds, then flip the coin
         setTimeout(async () => {
             try {
                 console.log('Timeout triggered, processing coin flip...');
@@ -330,7 +330,7 @@ client.on(Events.MessageCreate, async message => {
             } catch (error) {
                 console.error('Error in coin flip:', error);
             }
-        }, 60000);
+        }, 15000);
         
         return;
     }
