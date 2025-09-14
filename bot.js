@@ -351,7 +351,15 @@ client.on(Events.MessageCreate, async message => {
                     const losses = participantStats.totalGames - wins;
                     const isWinner = participant.id === winner.id;
                     const prefix = isWinner ? '🏆' : '📊';
-                    const username = participant.username || participant.displayName || `User ${participant.id}`;
+                    
+                    // Fetch user data to get proper username
+                    let username = `User ${participant.id}`;
+                    try {
+                        const user = await client.users.fetch(participant.id);
+                        username = user.username || user.displayName || username;
+                    } catch (error) {
+                        console.log(`Could not fetch user ${participant.id}:`, error.message);
+                    }
                     
                     console.log(`Displaying stats for ${username}:`, participantStats);
                     
