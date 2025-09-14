@@ -1,5 +1,7 @@
 const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js');
+const fs = require('fs');
+const path = require('path');
 
 // Track which ticket channels the bot has already responded in
 const respondedTickets = new Set();
@@ -7,6 +9,62 @@ const respondedTickets = new Set();
 // Track active interactions and timeouts
 const activeInteractions = new Map(); // channelId -> { dropdownMessage, timeout, userInteracted }
 const feedbackMessages = new Map(); // messageId -> { originalMessage, user }
+
+// Win tracking system
+const statsFile = path.join(__dirname, 'win-stats.json');
+let winStats = {};
+
+// Load existing stats
+function loadStats() {
+    try {
+        if (fs.existsSync(statsFile)) {
+            const data = fs.readFileSync(statsFile, 'utf8');
+            winStats = JSON.parse(data);
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+        winStats = {};
+    }
+}
+
+// Save stats to file
+function saveStats() {
+    try {
+        fs.writeFileSync(statsFile, JSON.stringify(winStats, null, 2));
+    } catch (error) {
+        console.error('Error saving stats:', error);
+    }
+}
+
+// Get or create user stats
+function getUserStats(userId) {
+    if (!winStats[userId]) {
+        winStats[userId] = {
+            wins: 0,
+            losses: 0,
+            totalGames: 0,
+            winRate: 0
+        };
+    }
+    return winStats[userId];
+}
+
+// Update user stats
+function updateUserStats(userId, won) {
+    const stats = getUserStats(userId);
+    stats.totalGames++;
+    if (won) {
+        stats.wins++;
+    } else {
+        stats.losses++;
+    }
+    stats.winRate = stats.wins / stats.totalGames;
+    saveStats();
+    return stats;
+}
+
+// Initialize stats on startup
+loadStats();
 
 // Use environment variable for token in production, fallback to config.json for local development
 let config;
@@ -207,12 +265,20 @@ client.on(Events.MessageCreate, async message => {
                     const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
                     const coachFrankWins = Math.random() < 0.5;
                     
+                    // Update stats
+                    const playerStats = updateUserStats(message.author.id, !coachFrankWins);
+                    const coachStats = updateUserStats('coachFrank', coachFrankWins);
+                    
                     const coachFrankEmbed = new EmbedBuilder()
                         .setColor(0x00FF00)
                         .setTitle('🪙 Coin Flip - Coach Frank Joins!')
                         .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n${coachFrankWins ? 
                             '🤖 **Coach Frank wins!** Better luck next time!' : 
                             '🎉 **You win!** You beat Coach Frank!'}\n\n*Coach Frank joined because nobody else wanted to play!*`)
+                        .addFields(
+                            { name: `📊 ${message.author.username}'s Stats`, value: `${playerStats.wins}W/${playerStats.losses}L (${(playerStats.winRate * 100).toFixed(1)}%)`, inline: true },
+                            { name: '🤖 Coach Frank\'s Stats', value: `${coachStats.wins}W/${coachStats.losses}L (${(coachStats.winRate * 100).toFixed(1)}%)`, inline: true }
+                        )
                         .setFooter({ text: 'Coach Frank is always ready to play!' })
                         .setTimestamp();
                     return flipMessage.edit({ embeds: [coachFrankEmbed] });
@@ -223,11 +289,20 @@ client.on(Events.MessageCreate, async message => {
                 const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
                 const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
                 
+                // Update stats for all participants
+                const winnerStats = updateUserStats(winner.id, true);
+                const losers = participants.filter(user => user.id !== winner.id);
+                losers.forEach(loser => updateUserStats(loser.id, false));
+                
                 const resultEmbed = new EmbedBuilder()
                     .setColor(0x00FF00)
                     .setTitle('🪙 Coin Flip Results!')
                     .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n🎉 **Winner:** ${winner}\n\n*Congratulations! You won the coin flip!*`)
-                    .setFooter({ text: `${participants.size} player${participants.size > 1 ? 's' : ''} participated` })
+                    .addFields(
+                        { name: `📊 ${winner.username}'s Stats`, value: `${winnerStats.wins}W/${winnerStats.losses}L (${(winnerStats.winRate * 100).toFixed(1)}%)`, inline: true },
+                        { name: '🎮 Participants', value: `${participants.size} player${participants.size > 1 ? 's' : ''}`, inline: true }
+                    )
+                    .setFooter({ text: 'Keep playing to climb the leaderboard!' })
                     .setTimestamp();
                 
                 await flipMessage.edit({ embeds: [resultEmbed] });
@@ -238,6 +313,73 @@ client.on(Events.MessageCreate, async message => {
         }, 60000);
         
         return;
+    }
+    if (message.content === '!stats') {
+        // Only allow stats in the commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!stats` command can only be used in the 🤖-commands channel!');
+        }
+        
+        const userStats = getUserStats(message.author.id);
+        const statsEmbed = new EmbedBuilder()
+            .setColor(0x00AE86)
+            .setTitle(`📊 ${message.author.username}'s Coin Flip Stats`)
+            .addFields(
+                { name: '🏆 Wins', value: userStats.wins.toString(), inline: true },
+                { name: '💔 Losses', value: userStats.losses.toString(), inline: true },
+                { name: '🎮 Total Games', value: userStats.totalGames.toString(), inline: true },
+                { name: '📈 Win Rate', value: `${(userStats.winRate * 100).toFixed(1)}%`, inline: true }
+            )
+            .setFooter({ text: 'Keep flipping to improve your stats!' })
+            .setTimestamp();
+        
+        return message.reply({ embeds: [statsEmbed] });
+    }
+    if (message.content === '!leaderboard') {
+        // Only allow leaderboard in the commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!leaderboard` command can only be used in the 🤖-commands channel!');
+        }
+        
+        // Get all users with at least 1 game
+        const sortedUsers = Object.entries(winStats)
+            .filter(([userId, stats]) => stats.totalGames > 0 && userId !== 'coachFrank')
+            .sort((a, b) => b[1].winRate - a[1].winRate)
+            .slice(0, 10);
+        
+        if (sortedUsers.length === 0) {
+            return message.reply('📊 No players have played yet! Start a game with `!flipcoin`');
+        }
+        
+        const leaderboardEmbed = new EmbedBuilder()
+            .setColor(0xFFD700)
+            .setTitle('🏆 Coin Flip Leaderboard')
+            .setDescription('Top players by win rate')
+            .setFooter({ text: 'Minimum 1 game required' })
+            .setTimestamp();
+        
+        let leaderboardText = '';
+        for (let i = 0; i < sortedUsers.length; i++) {
+            const [userId, stats] = sortedUsers[i];
+            const user = message.guild.members.cache.get(userId);
+            const username = user ? user.user.username : `User ${userId}`;
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
+            leaderboardText += `${medal} **${username}** - ${stats.wins}W/${stats.losses}L (${(stats.winRate * 100).toFixed(1)}%)\n`;
+        }
+        
+        leaderboardEmbed.addFields({ name: 'Top Players', value: leaderboardText, inline: false });
+        
+        // Add Coach Frank's stats
+        const coachStats = getUserStats('coachFrank');
+        if (coachStats.totalGames > 0) {
+            leaderboardEmbed.addFields({ 
+                name: '🤖 Coach Frank', 
+                value: `${coachStats.wins}W/${coachStats.losses}L (${(coachStats.winRate * 100).toFixed(1)}%)`, 
+                inline: false 
+            });
+        }
+        
+        return message.reply({ embeds: [leaderboardEmbed] });
     }
     if (message.content === '!help') {
         const helpEmbed = new EmbedBuilder()
@@ -251,6 +393,8 @@ client.on(Events.MessageCreate, async message => {
                 { name: '!testdropdown', value: '🧪 **Testing Command** - Send dropdown for testing interactions', inline: false },
                 { name: '!support', value: 'Force trigger the support system', inline: false },
                 { name: '!flipcoin', value: '🎮 **Mini Game** - Start a coin flip challenge!', inline: false },
+                { name: '!stats', value: '📊 **Stats** - View your coin flip win/loss record', inline: false },
+                { name: '!leaderboard', value: '🏆 **Leaderboard** - See top players by win rate', inline: false },
                 { name: '!ping', value: 'Test if the bot is working', inline: false },
                 { name: '!hello', value: 'Get a friendly greeting', inline: false },
                 { name: '!serverinfo', value: 'Show server information', inline: false }
