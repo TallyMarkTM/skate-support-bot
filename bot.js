@@ -339,12 +339,25 @@ client.on(Events.MessageCreate, async message => {
                     .setColor(0x00FF00)
                     .setTitle('🪙 Coin Flip Results!')
                     .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n🎉 **Winner:** ${winner}\n\n*Congratulations! You won the coin flip!*`)
-                    .addFields(
-                        { name: `📊 ${winner.username}'s Stats`, value: `${Math.round(winnerStats.winRate * winnerStats.totalGames)}W/${winnerStats.totalGames - Math.round(winnerStats.winRate * winnerStats.totalGames)}L (${(winnerStats.winRate * 100).toFixed(1)}%)`, inline: true },
-                        { name: '🎮 Participants', value: `${participants.size} player${participants.size > 1 ? 's' : ''}`, inline: true }
-                    )
                     .setFooter({ text: 'Keep playing to climb the leaderboard!' })
                     .setTimestamp();
+                
+                // Add stats for all participants
+                const statsFields = [];
+                for (const participant of participants) {
+                    const participantStats = getUserStats(participant.id);
+                    const wins = Math.round(participantStats.winRate * participantStats.totalGames);
+                    const losses = participantStats.totalGames - wins;
+                    const isWinner = participant.id === winner.id;
+                    const prefix = isWinner ? '🏆' : '📊';
+                    statsFields.push({
+                        name: `${prefix} ${participant.username}'s Stats`,
+                        value: `${wins}W/${losses}L (${(participantStats.winRate * 100).toFixed(1)}%)`,
+                        inline: true
+                    });
+                }
+                
+                resultEmbed.addFields(statsFields);
                 
                 await flipMessage.edit({ embeds: [resultEmbed] });
                 
@@ -385,9 +398,9 @@ client.on(Events.MessageCreate, async message => {
             return message.reply('❌ The `!leaderboard` command can only be used in the 🤖-commands channel!');
         }
         
-        // Get all users with at least 1 game
+        // Get all users with at least 20 games
         const sortedUsers = Object.entries(winStats)
-            .filter(([userId, stats]) => stats.totalGames > 0 && userId !== 'coachFrank')
+            .filter(([userId, stats]) => stats.totalGames >= 20 && userId !== 'coachFrank')
             .sort((a, b) => b[1].winRate - a[1].winRate)
             .slice(0, 10);
         
@@ -399,7 +412,7 @@ client.on(Events.MessageCreate, async message => {
             .setColor(0xFFD700)
             .setTitle('🏆 Coin Flip Leaderboard')
             .setDescription('Top players by win rate')
-            .setFooter({ text: 'Minimum 1 game required' })
+            .setFooter({ text: 'Minimum 20 games required' })
             .setTimestamp();
         
         let leaderboardText = '';
