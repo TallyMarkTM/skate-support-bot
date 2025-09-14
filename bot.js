@@ -76,7 +76,7 @@ function sendDropdown(message, isResend = false) {
                 { label: 'Game Crashes After Loading', value: 'gamecrashes' },
                 { label: 'Audio Issues', value: 'audio' },
                 { label: 'Skate 3 Online Help', value: 'online' },
-                { label: 'Increase Native FPS', value: 'fps' }
+                { label: 'Force Higher FPS', value: 'fps' }
             ])
     );
     
