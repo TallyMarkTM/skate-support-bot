@@ -311,10 +311,12 @@ client.on(Events.MessageCreate, async message => {
                 
                 // Get users who reacted (excluding bots)
                 const users = await reaction.users.fetch();
-                const participants = users.filter(user => !user.bot);
-                console.log('Participants:', participants.size);
+                console.log('All users who reacted:', Array.from(users.values()).map(u => u ? `${u.username} (${u.id}, bot: ${u.bot})` : 'undefined'));
+                const participants = Array.from(users.values()).filter(user => user && user.id && !user.bot);
+                console.log('Participants after filtering:', participants.map(p => `${p.username} (${p.id})`));
+                console.log('Participants count:', participants.length);
                 
-                if (participants.size === 0) {
+                if (participants.length === 0) {
                     // Coach Frank plays if nobody else joins!
                     const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
                     const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
@@ -340,7 +342,7 @@ client.on(Events.MessageCreate, async message => {
                 }
                 
                 // Pick a random winner
-                const winner = participants.random();
+                const winner = participants[Math.floor(Math.random() * participants.length)];
                 const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
                 const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
                 
