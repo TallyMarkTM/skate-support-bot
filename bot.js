@@ -32,10 +32,27 @@ function saveStats() {
     try {
         console.log('Saving stats to:', statsFile);
         console.log('Stats data:', winStats);
+        
+        // Ensure directory exists
+        const dir = path.dirname(statsFile);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        
+        // Write file
         fs.writeFileSync(statsFile, JSON.stringify(winStats, null, 2));
         console.log('Stats saved successfully!');
+        
+        // Verify file was created
+        if (fs.existsSync(statsFile)) {
+            console.log('File exists at:', statsFile);
+        } else {
+            console.log('ERROR: File was not created!');
+        }
     } catch (error) {
         console.error('Error saving stats:', error);
+        console.error('Error details:', error.message);
+        console.error('Error stack:', error.stack);
     }
 }
 
@@ -385,6 +402,22 @@ client.on(Events.MessageCreate, async message => {
         }
         
         return message.reply({ embeds: [leaderboardEmbed] });
+    }
+    if (message.content === '!testfile') {
+        // Only allow in commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!testfile` command can only be used in the 🤖-commands channel!');
+        }
+        
+        // Test file creation
+        try {
+            const testData = { test: 'data', timestamp: Date.now() };
+            fs.writeFileSync(statsFile, JSON.stringify(testData, null, 2));
+            message.reply('✅ Test file created successfully!');
+        } catch (error) {
+            message.reply(`❌ Error creating test file: ${error.message}`);
+        }
+        return;
     }
     if (message.content === '!help') {
         const helpEmbed = new EmbedBuilder()
