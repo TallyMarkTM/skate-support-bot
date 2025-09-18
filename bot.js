@@ -618,8 +618,12 @@ client.on('interactionCreate', async interaction => {
         for (const category of selectedCategories) {
             const categoryData = knowledgeBase[category];
             if (categoryData && categoryData.solutions && categoryData.solutions.length > 0) {
-                const bestSolution = categoryData.solutions.reduce((a, b) => a.confidence > b.confidence ? a : b);
-                response += `**${category.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}**\n${bestSolution.solution}\n\n`;
+                // Show all solutions for the category, sorted by confidence (highest first)
+                const sortedSolutions = categoryData.solutions.sort((a, b) => b.confidence - a.confidence);
+                response += `**${category.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}**\n`;
+                for (const solution of sortedSolutions) {
+                    response += `${solution.solution}\n\n`;
+                }
             }
         }
         if (response.length === 0) {
