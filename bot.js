@@ -10,9 +10,98 @@ const respondedTickets = new Set();
 const activeInteractions = new Map(); // channelId -> { dropdownMessage, timeout, userInteracted }
 const feedbackMessages = new Map(); // messageId -> { originalMessage, user }
 
-// Variables removed - coinflip functionality eliminated
+// Cooldown tracking for flipcoin command
+const flipcoinCooldowns = new Map(); // userId -> timestamp
 
-// Stats functions removed - coinflip functionality eliminated
+// Win tracking system
+const statsFile = path.join('/app/data', 'win-stats.json');
+let winStats = {};
+
+// Load existing stats
+function loadStats() {
+    try {
+        if (fs.existsSync(statsFile)) {
+            const data = fs.readFileSync(statsFile, 'utf8');
+            winStats = JSON.parse(data);
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+        winStats = {};
+    }
+}
+
+// Clean up invalid entries from stats
+function cleanupStats() {
+    const validEntries = {};
+    for (const [userId, stats] of Object.entries(winStats)) {
+        if (userId && userId !== 'undefined' && userId !== 'null' && typeof userId === 'string') {
+            validEntries[userId] = stats;
+        }
+    }
+    winStats = validEntries;
+}
+
+// Save stats to file
+function saveStats() {
+    try {
+        // Clean up invalid entries before saving
+        cleanupStats();
+        
+        console.log('Saving stats to:', statsFile);
+        console.log('Stats data:', winStats);
+        
+        // Ensure directory exists
+        const dir = path.dirname(statsFile);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        
+        // Write file
+        fs.writeFileSync(statsFile, JSON.stringify(winStats, null, 2));
+        console.log('Stats saved successfully!');
+        
+        // Verify file was created
+        if (fs.existsSync(statsFile)) {
+            console.log('File exists at:', statsFile);
+        } else {
+            console.log('ERROR: File was not created!');
+        }
+    } catch (error) {
+        console.error('Error saving stats:', error);
+        console.error('Error details:', error.message);
+        console.error('Error stack:', error.stack);
+    }
+}
+
+// Get or create user stats
+function getUserStats(userId) {
+    if (!winStats[userId]) {
+        winStats[userId] = {
+            totalGames: 0,
+            winRate: 0
+        };
+    }
+    return winStats[userId];
+}
+
+// Update user stats
+function updateUserStats(userId, won) {
+    console.log('Updating stats for user:', userId, 'won:', won);
+    const stats = getUserStats(userId);
+    
+    // Calculate new win rate using running average
+    const currentWins = stats.winRate * stats.totalGames;
+    const newWins = won ? currentWins + 1 : currentWins;
+    stats.totalGames++;
+    stats.winRate = newWins / stats.totalGames;
+    
+    console.log('Updated stats:', stats);
+    saveStats();
+    return stats;
+}
+
+// Initialize stats on startup
+loadStats();
 
 // Use environment variable for token in production, fallback to config.json for local development
 let config;
@@ -172,7 +261,241 @@ client.on(Events.MessageCreate, async message => {
             .setTimestamp();
         return message.reply({ embeds: [embed] });
     }
-    // Coinflip commands removed - functionality eliminated
+    if (message.content === '!flipcoin') {
+        // Only allow flipcoin in the commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!flipcoin` command can only be used in the 🤖-commands channel!');
+        }
+        
+        // Check cooldown
+        const userId = message.author.id;
+        const now = Date.now();
+        const cooldownTime = 16000; // 16 seconds
+        
+        if (flipcoinCooldowns.has(userId)) {
+            const lastUsed = flipcoinCooldowns.get(userId);
+            const timeLeft = cooldownTime - (now - lastUsed);
+            
+            if (timeLeft > 0) {
+                const secondsLeft = Math.ceil(timeLeft / 1000);
+                return message.reply(`⏰ You can use \`!flipcoin\` again in ${secondsLeft} seconds!`);
+            }
+        }
+        
+        // Set cooldown
+        flipcoinCooldowns.set(userId, now);
+        
+        console.log('Flipcoin command triggered by:', message.author.username);
+        const flipEmbed = new EmbedBuilder()
+            .setColor(0xFFD700)
+            .setTitle('🪙 Coin Flip Challenge!')
+            .setDescription(`**${message.author.username}** has challenged everyone to a coin flip!\n\nReact with 🪙 to join the flip!\n\n*The coin will flip in 15 seconds...*`)
+            .setFooter({ text: 'Good luck!' })
+            .setTimestamp();
+        
+        const flipMessage = await message.reply({ embeds: [flipEmbed] });
+        console.log('Flipcoin message sent, adding reaction...');
+        await flipMessage.react('🪙');
+        console.log('Reaction added, setting timeout...');
+        
+        // Wait 15 seconds, then flip the coin
+        setTimeout(async () => {
+            try {
+                console.log('Timeout triggered, processing coin flip...');
+                // Get all reactions
+                const reaction = flipMessage.reactions.cache.get('🪙');
+                if (!reaction) {
+                    console.log('No reaction found');
+                    return;
+                }
+                
+                // Get users who reacted (excluding bots and Coach Frank)
+                const users = await reaction.users.fetch();
+                console.log('All users who reacted:', Array.from(users.values()).map(u => u ? `${u.username} (${u.id}, bot: ${u.bot})` : 'undefined'));
+                const reactedUsers = Array.from(users.values()).filter(user => user && user.id && !user.bot && user.id !== client.user.id);
+                
+                // Check if anyone else joined (excluding the starter)
+                const otherParticipants = reactedUsers.filter(user => user.id !== message.author.id);
+                console.log('Other participants (excluding starter and Coach Frank):', otherParticipants.map(p => `${p.username} (${p.id})`));
+                console.log('Other participants count:', otherParticipants.length);
+                
+                if (otherParticipants.length === 0) {
+                    // Coach Frank plays if nobody else joins!
+                    const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                    const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
+                    const coachFrankWins = Math.random() < 0.5;
+                    
+                    // Update stats
+                    const playerStats = updateUserStats(message.author.id, !coachFrankWins);
+                    const coachStats = updateUserStats('coachFrank', coachFrankWins);
+                    
+                    const coachFrankEmbed = new EmbedBuilder()
+                        .setColor(0x00FF00)
+                        .setTitle('🪙 Coin Flip - Coach Frank Joins!')
+                        .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n${coachFrankWins ? 
+                            '🤖 **Coach Frank wins!** Better luck next time!' : 
+                            '🎉 **You win!** You beat Coach Frank!'}\n\n*Coach Frank joined because nobody else wanted to play!*`)
+                        .addFields(
+                            { name: `📊 ${message.author.username}'s Stats`, value: `${Math.round(playerStats.winRate * playerStats.totalGames)}W/${playerStats.totalGames - Math.round(playerStats.winRate * playerStats.totalGames)}L (${(playerStats.winRate * 100).toFixed(1)}%)`, inline: true },
+                            { name: '🤖 Coach Frank\'s Stats', value: `${Math.round(coachStats.winRate * coachStats.totalGames)}W/${coachStats.totalGames - Math.round(coachStats.winRate * coachStats.totalGames)}L (${(coachStats.winRate * 100).toFixed(1)}%)`, inline: true }
+                        )
+                        .setFooter({ text: 'Coach Frank is always ready to play!' })
+                        .setTimestamp();
+                    return flipMessage.edit({ embeds: [coachFrankEmbed] });
+                }
+                
+                // Create participants array: starter + other participants
+                const participants = [message.author, ...otherParticipants];
+                console.log('Final participants:', participants.map(p => `${p.username} (${p.id})`));
+                
+                // Pick a random winner
+                const winner = participants[Math.floor(Math.random() * participants.length)];
+                const coinResult = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                const coinEmoji = coinResult === 'Heads' ? '🟡' : '⚫';
+                
+                // Update stats for all participants
+                const winnerStats = updateUserStats(winner.id, true);
+                const losers = participants.filter(user => user.id !== winner.id);
+                losers.forEach(loser => updateUserStats(loser.id, false));
+                
+                const resultEmbed = new EmbedBuilder()
+                    .setColor(0x00FF00)
+                    .setTitle('🪙 Coin Flip Results!')
+                    .setDescription(`**Coin Result:** ${coinEmoji} **${coinResult}**\n\n🎉 **Winner:** ${winner}\n\n*Congratulations! You won the coin flip!*`)
+                    .setFooter({ text: 'Keep playing to climb the leaderboard!' })
+                    .setTimestamp();
+                
+                // Add stats for all participants (filter out invalid ones)
+                const statsFields = [];
+                const validParticipants = participants.filter(p => p && p.id && p.id !== 'undefined');
+                
+                for (const participant of validParticipants) {
+                    // Get fresh stats after the game
+                    const participantStats = getUserStats(participant.id);
+                    const wins = Math.round(participantStats.winRate * participantStats.totalGames);
+                    const losses = participantStats.totalGames - wins;
+                    const isWinner = participant.id === winner.id;
+                    const prefix = isWinner ? '🏆' : '📊';
+                    
+                    // Fetch user data to get proper username
+                    let username = `User ${participant.id}`;
+                    try {
+                        const user = await client.users.fetch(participant.id);
+                        username = user.username || user.displayName || username;
+                    } catch (error) {
+                        console.log(`Could not fetch user ${participant.id}:`, error.message);
+                    }
+                    
+                    console.log(`Displaying stats for ${username}:`, participantStats);
+                    
+                    statsFields.push({
+                        name: `${prefix} ${username}'s Stats`,
+                        value: `${wins}W/${losses}L (${(participantStats.winRate * 100).toFixed(1)}%)`,
+                        inline: true
+                    });
+                }
+                
+                resultEmbed.addFields(statsFields);
+                
+                await flipMessage.edit({ embeds: [resultEmbed] });
+                
+            } catch (error) {
+                console.error('Error in coin flip:', error);
+            }
+        }, 15000);
+        
+        return;
+    }
+    if (message.content === '!stats') {
+        // Only allow stats in the commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!stats` command can only be used in the 🤖-commands channel!');
+        }
+        
+        const userStats = getUserStats(message.author.id);
+        const wins = Math.round(userStats.winRate * userStats.totalGames);
+        const losses = userStats.totalGames - wins;
+        
+        const statsEmbed = new EmbedBuilder()
+            .setColor(0x00AE86)
+            .setTitle(`📊 ${message.author.username}'s Coin Flip Stats`)
+            .addFields(
+                { name: '🏆 Wins', value: wins.toString(), inline: true },
+                { name: '💔 Losses', value: losses.toString(), inline: true },
+                { name: '🎮 Total Games', value: userStats.totalGames.toString(), inline: true },
+                { name: '📈 Win Rate', value: `${(userStats.winRate * 100).toFixed(1)}%`, inline: true }
+            )
+            .setFooter({ text: 'Keep flipping to improve your stats!' })
+            .setTimestamp();
+        
+        return message.reply({ embeds: [statsEmbed] });
+    }
+    if (message.content === '!leaderboard') {
+        // Only allow leaderboard in the commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!leaderboard` command can only be used in the 🤖-commands channel!');
+        }
+        
+        // Get all users with at least 20 games
+        const sortedUsers = Object.entries(winStats)
+            .filter(([userId, stats]) => stats.totalGames >= 20 && userId !== 'coachFrank')
+            .sort((a, b) => b[1].winRate - a[1].winRate)
+            .slice(0, 10);
+        
+        if (sortedUsers.length === 0) {
+            return message.reply('📊 No players have played yet! Start a game with `!flipcoin`');
+        }
+        
+        const leaderboardEmbed = new EmbedBuilder()
+            .setColor(0xFFD700)
+            .setTitle('🏆 Coin Flip Leaderboard')
+            .setDescription('Top players by win rate')
+            .setFooter({ text: 'Minimum 20 games required' })
+            .setTimestamp();
+        
+        let leaderboardText = '';
+        for (let i = 0; i < sortedUsers.length; i++) {
+            const [userId, stats] = sortedUsers[i];
+            const user = message.guild.members.cache.get(userId);
+            const username = user ? user.user.username : `User ${userId}`;
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
+            const wins = Math.round(stats.winRate * stats.totalGames);
+            const losses = stats.totalGames - wins;
+            leaderboardText += `${medal} **${username}** - ${wins}W/${losses}L (${(stats.winRate * 100).toFixed(1)}%)\n`;
+        }
+        
+        leaderboardEmbed.addFields({ name: 'Top Players', value: leaderboardText, inline: false });
+        
+        // Add Coach Frank's stats
+        const coachStats = getUserStats('coachFrank');
+        if (coachStats.totalGames > 0) {
+            const coachWins = Math.round(coachStats.winRate * coachStats.totalGames);
+            const coachLosses = coachStats.totalGames - coachWins;
+            leaderboardEmbed.addFields({ 
+                name: '🤖 Coach Frank', 
+                value: `${coachWins}W/${coachLosses}L (${(coachStats.winRate * 100).toFixed(1)}%)`, 
+                inline: false 
+            });
+        }
+        
+        return message.reply({ embeds: [leaderboardEmbed] });
+    }
+    if (message.content === '!testfile') {
+        // Only allow in commands channel
+        if (message.channel.name !== '🤖-commands') {
+            return message.reply('❌ The `!testfile` command can only be used in the 🤖-commands channel!');
+        }
+        
+        // Test file creation
+        try {
+            const testData = { test: 'data', timestamp: Date.now() };
+            fs.writeFileSync(statsFile, JSON.stringify(testData, null, 2));
+            message.reply('✅ Test file created successfully!');
+        } catch (error) {
+            message.reply(`❌ Error creating test file: ${error.message}`);
+        }
+        return;
+    }
     if (message.content === '!help') {
         const helpEmbed = new EmbedBuilder()
             .setColor(0x00AE86)
@@ -184,6 +507,9 @@ client.on(Events.MessageCreate, async message => {
                 { name: '!test [question]', value: '🧪 **Support Only** - Test bot responses with detailed info (e.g., `!test catastrophic failure`)', inline: false },
                 { name: '!testdropdown', value: '🧪 **Testing Command** - Send dropdown for testing interactions', inline: false },
                 { name: '!support', value: 'Force trigger the support system', inline: false },
+                { name: '!flipcoin', value: '🎮 **Mini Game** - Start a coin flip challenge!', inline: false },
+                { name: '!stats', value: '📊 **Stats** - View your coin flip win/loss record', inline: false },
+                { name: '!leaderboard', value: '🏆 **Leaderboard** - See top players by win rate', inline: false },
                 { name: '!ping', value: 'Test if the bot is working', inline: false },
                 { name: '!hello', value: 'Get a friendly greeting', inline: false },
                 { name: '!serverinfo', value: 'Show server information', inline: false }
