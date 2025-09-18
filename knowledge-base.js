@@ -118,7 +118,7 @@ const knowledgeBase = {
         solutions: [
             {
                 issue: "Missing textures for CFSS",
-                solution: "**Step 1:** Get DLC from <#764082333623386123> (Tutorials)\n\n**If DLC doesn't fix the issue:**\n**Step 2:** The CFSS uploader did not upload the CFSS file correctly and you should try to use a different skater.\n\n**If all skaters don't work and are missing assets:**\n**Step 3:** Confirm you have checked the <#998366877233463386> (Changelogs) channel and have done what the latest CFSS messages say to do.",
+                solution: "**Step 1:** Get DLC from <#764082333623386123> (Tutorials)\n\n**If DLC doesn't fix the issue:**\n**Step 2:** The CFSS uploader did not upload the CFSS file correctly and you should try to use a different skater.\n\n**If all skaters don't work and are missing assets:**\n**Step 3:** Confirm you have checked the <#854455211035459616> channel and have done what the latest CFSS messages say to do.",
                 confidence: 0.95
             },
             {
