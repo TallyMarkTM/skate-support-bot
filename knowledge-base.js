@@ -21,7 +21,7 @@ const knowledgeBase = {
         solutions: [
             {
                 issue: "Skate.p location and savefile installation",
-                solution: "**Skate.p Location:** `\\dev_hdd0\\home\\00000001\\savedata`\n\n**Installation Guide:** https://docs.google.com/document/d/1RasRan4QzcogBZtr5GnkKiG6WS_ZQQOh/edit\n\nThis covers installing gamesaves for all platforms.",
+                solution: "**Skater.p Location:** **First go to your Rpcs3 folder and then** `\\dev_hdd0\\home\\00000001\\savedata`\n\n**Installation Guide:** https://docs.google.com/document/d/1RasRan4QzcogBZtr5GnkKiG6WS_ZQQOh/edit\n\nThis covers installing gamesaves for all platforms.",
                 confidence: 0.95
             }
         ]
