@@ -62,7 +62,7 @@ function sendDropdown(message, isResend = false) {
             .setMaxValues(1)
             .addOptions([
                 { label: 'RPCS3 Setup Issues', value: 'rpcs3' },
-                { label: 'Savefile/Gamesave Issues', value: 'savefiles' },
+                { label: 'Skater.p/Gamesaves', value: 'savefiles' },
                 { label: 'Graphics/Savefile Issues', value: 'graphics' },
                 { label: 'Black Screen Issues', value: 'blackscreen' },
                 { label: 'Native Menu Issues', value: 'nativemenu' },
@@ -74,7 +74,7 @@ function sendDropdown(message, isResend = false) {
                 { label: 'Graphics Quality Issues', value: 'quality' },
                 { label: 'Updates and DLC', value: 'updates' },
                 { label: 'File Extraction Issues', value: 'extraction' },
-                { label: 'Game Performance Issues (RPCS3 Only)', value: 'gameperformance' },
+                { label: 'Performance/Slow Motion Issues (RPCS3 Only)', value: 'gameperformance' },
                 { label: 'Physics and Clipping Issues', value: 'physics' },
                 { label: 'Display Issues', value: 'display' },
                 { label: 'RPCS3 Software Detection', value: 'software' },
