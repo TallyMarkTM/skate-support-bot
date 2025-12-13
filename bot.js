@@ -1,3 +1,4 @@
+const { checkImageBuffer } = require("./scam-detector/scamDetector");
 const { Client, GatewayIntentBits, Events, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { findBestSolution, getRelevantSolutions } = require('./knowledge-base.js');
 const fs = require('fs');

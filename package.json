@@ -10,11 +10,17 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": ["discord", "bot", "discord.js"],
+  "keywords": [
+    "discord",
+    "bot",
+    "discord.js"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "discord.js": "^14.14.1",
+    "jimp": "^1.6.0",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
