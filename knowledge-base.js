@@ -59,7 +59,7 @@ const knowledgeBase = {
         solutions: [
             {
                 issue: "Native menu stuck on 'scanning for AoB's'",
-                solution: "This is a common issue! Download this fix: https://www.mediafire.com/file/ng36nd3ndxa8yhp/RPCS3_BLUS_Build.7z/file\n\n**Important:** This RPCS3 build comes with Skate 3 and all DLC already installed and has been tested to work with native menu. Just get this build - **DO NOT UPDATE IT** as updating will break the mods.\n\nIf you need setup help, follow <#807348308451655730> (Beginners Guide).",
+                solution: "This is a common issue! Download this fix: https://app.mediafire.com/folder/iwlaqie7ojokf\n\n**Important:** This RPCS3 build comes with Skate 3 and all DLC already installed and has been tested to work with native menu. Just get this build - **DO NOT UPDATE IT** as updating will break the mods.\n\nIf you need setup help, follow <#807348308451655730> (Beginners Guide).",
                 confidence: 0.95
             },
             {
@@ -211,7 +211,7 @@ const knowledgeBase = {
         solutions: [
             {
                 issue: "RPCS3 says it could not find any software",
-                solution: "If RPCS3 can't find any software, get the custom RPCS3 build that comes with Skate 3 pre-installed:\n\nhttps://www.mediafire.com/file/ng36nd3ndxa8yhp/RPCS3_BLUS_Build.7z/file\n\nThis build has been tested and includes everything you need.",
+                solution: "If RPCS3 can't find any software, get the custom RPCS3 build that comes with Skate 3 pre-installed:\n\nhttps://app.mediafire.com/folder/iwlaqie7ojokf\n\nThis build has been tested and includes everything you need.",
                 confidence: 0.98
             }
         ]
@@ -243,7 +243,7 @@ const knowledgeBase = {
         solutions: [
             {
                 issue: "Game loads but crashes after a few seconds or minutes",
-                solution: "If your CPU and GPU are good enough for RPCS3 but the game crashes quickly, use the custom RPCS3 build:\n\nhttps://www.mediafire.com/file/ng36nd3ndxa8yhp/RPCS3_BLUS_Build.7z/file\n\nIf the custom build also crashes fast after playing, ask for further assistance in the support channels.",
+                solution: "If your CPU and GPU are good enough for RPCS3 but the game crashes quickly, use the custom RPCS3 build:\n\nhttps://app.mediafire.com/folder/iwlaqie7ojokf\n\nIf the custom build also crashes fast after playing, ask for further assistance in the support channels.",
                 confidence: 0.9
             }
         ]
